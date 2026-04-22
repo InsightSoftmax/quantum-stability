@@ -1,0 +1,11 @@
+run_date,platform,backend,input_bits,circuit_length,shots,counts_json,success_probability,job_id,job_start_time,job_end_time,sdk_version,notes
+2026-04-22,iqm_braket,Garnet,01,1,100,"{""01"": 97, ""00"": 3}",0.97,arn:aws:braket:eu-north-1:835581428919:quantum-task/ef3a2e80-e193-4b4b-81af-89c098f47ca0,2026-04-22T10:51:45.299Z,2026-04-22T10:59:05.178Z,1.114.0,
+2026-04-22,iqm_braket,Garnet,01,2,100,"{""11"": 95, ""01"": 5}",0.95,arn:aws:braket:eu-north-1:835581428919:quantum-task/f5d91e29-6e83-4198-8027-995aefca16c6,2026-04-22T10:51:45.685Z,2026-04-22T10:52:40.090Z,1.114.0,
+2026-04-22,iqm_braket,Garnet,00,3,100,"{""00"": 99, ""01"": 1}",0.99,arn:aws:braket:eu-north-1:835581428919:quantum-task/d6e361bc-6047-416b-807a-32f89f9a37e3,2026-04-22T10:51:46.031Z,2026-04-22T10:52:35.995Z,1.114.0,
+2026-04-22,iqm_braket,Garnet,00,4,100,"{""00"": 99, ""10"": 1}",0.99,arn:aws:braket:eu-north-1:835581428919:quantum-task/7d0ff133-b115-4892-9aca-041cd467ad3a,2026-04-22T10:51:47.359Z,2026-04-22T10:52:35.933Z,1.114.0,
+2026-04-22,iqm_braket,Garnet,00,5,100,"{""00"": 94, ""01"": 2, ""10"": 4}",0.94,arn:aws:braket:eu-north-1:835581428919:quantum-task/e8877fef-593f-435f-b963-56a3c9b470ae,2026-04-22T10:51:47.720Z,2026-04-22T10:53:06.235Z,1.114.0,
+2026-04-22,iqm_braket,Garnet,11,6,100,"{""11"": 90, ""10"": 5, ""01"": 5}",0.9,arn:aws:braket:eu-north-1:835581428919:quantum-task/6d403281-faa9-4488-acbb-cc279cd90306,2026-04-22T10:51:48.088Z,2026-04-22T10:53:10.369Z,1.114.0,
+2026-04-22,iqm_braket,Garnet,10,2,100,"{""01"": 96, ""11"": 3, ""00"": 1}",0.96,arn:aws:braket:eu-north-1:835581428919:quantum-task/6579a8ad-b8c1-4c68-a4ba-906c075c905a,2026-04-22T10:51:48.429Z,2026-04-22T10:53:36.627Z,1.114.0,
+2026-04-22,iqm_braket,Garnet,00,1,100,"{""00"": 98, ""10"": 2}",0.98,arn:aws:braket:eu-north-1:835581428919:quantum-task/a9f2d1b7-664c-4e5a-8ce7-b1c5db43bce2,2026-04-22T10:51:48.776Z,2026-04-22T10:53:36.631Z,1.114.0,
+2026-04-22,iqm_braket,Garnet,10,3,100,"{""01"": 97, ""00"": 3}",0.97,arn:aws:braket:eu-north-1:835581428919:quantum-task/81ab31cc-dfee-4ba4-a346-09cbfa12a870,2026-04-22T10:51:49.123Z,2026-04-22T10:59:05.177Z,1.114.0,
+2026-04-22,iqm_braket,Garnet,00,1,100,"{""00"": 97, ""10"": 2, ""01"": 1}",0.97,arn:aws:braket:eu-north-1:835581428919:quantum-task/2ee38c2b-c339-4830-b892-4021137a0a6e,2026-04-22T10:51:49.466Z,2026-04-22T10:59:05.180Z,1.114.0,
