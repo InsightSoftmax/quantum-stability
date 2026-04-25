@@ -19,7 +19,7 @@ const sortedSummary = [...summary].sort((a, b) => {
   const so = order(a.status) - order(b.status);
   return so !== 0 ? so : a.platform.localeCompare(b.platform);
 });
-// Consistency score: (1 − avg within-run std dev) × 100%, 4-run rolling average
+// Consistency score: (1 - avg within-run std dev) x 100%, 4-run rolling average
 const consistencyScores = Object.fromEntries(
   summary.map(p => {
     const recent = p.sparkline.slice(-4);
@@ -55,7 +55,7 @@ ${sortedSummary.map(p => html`
 
 ## Consistency over time
 
-Within-run consistency score (1 − std dev) per run — higher is more consistent. Bold line is the 4-run rolling average; faded dots are individual runs.
+Within-run consistency score (1 - std dev) per run — higher is more consistent. Faded line and dots are individual runs; bold line and larger dots are the 4-run rolling average. Both share the same colour per platform.
 
 ```js
 const PLATFORM_LABEL = {
@@ -100,9 +100,14 @@ Plot.plot({
   x: {type: "utc", label: null},
   color: {domain: colorDomain, range: colorRange, legend: true},
   marks: [
+    Plot.line(allRuns, {
+      x: "date", y: d => 1 - d.std, stroke: "label",
+      strokeWidth: 1, strokeOpacity: 0.3, curve: "monotone-x",
+    }),
     Plot.dot(allRuns, {
       x: "date", y: d => 1 - d.std, fill: "label",
-      r: 2, fillOpacity: 0.2,
+      r: 2, fillOpacity: 0.3, tip: true,
+      title: d => `${d.label}\n${d.date.toLocaleDateString()}\n${((1 - d.std) * 100).toFixed(1)}%`,
     }),
     Plot.line(maRuns, {
       x: "date", y: d => 1 - d.maStd, stroke: "label",
@@ -119,7 +124,7 @@ Plot.plot({
 
 ## Success probability over time
 
-Bold line is the 4-run rolling average; faded dots are individual runs.
+Faded line and dots are individual runs; bold line and larger dots are the 4-run rolling average. Both share the same colour per platform.
 
 ```js
 Plot.plot({
@@ -131,9 +136,14 @@ Plot.plot({
   color: {domain: colorDomain, range: colorRange, legend: true},
   marks: [
     Plot.ruleY([1], {stroke: "#e2e8f0"}),
+    Plot.line(allRuns, {
+      x: "date", y: "value", stroke: "label",
+      strokeWidth: 1, strokeOpacity: 0.3, curve: "monotone-x",
+    }),
     Plot.dot(allRuns, {
       x: "date", y: "value", fill: "label",
-      r: 2, fillOpacity: 0.2,
+      r: 2, fillOpacity: 0.3, tip: true,
+      title: d => `${d.label}\n${d.date.toLocaleDateString()}\n${(d.value * 100).toFixed(1)}%`,
     }),
     Plot.line(maRuns, {
       x: "date", y: "maValue", stroke: "label",
