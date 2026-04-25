@@ -38,6 +38,7 @@ runs["std_success"] = runs["std_success"].fillna(0).round(4)
 # Per-circuit detail (for breakdowns)
 circuits = df[["run_date", "input_bits", "circuit_length", "success_probability", "job_end_time"]].copy()
 circuits["run_date"] = circuits["run_date"].dt.strftime("%Y-%m-%d")
+circuits["job_end_time"] = None  # AQT doesn't record job timing
 
 # Aggregated by circuit length
 by_length = (
