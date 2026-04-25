@@ -106,8 +106,7 @@ Plot.plot({
     }),
     Plot.dot(allRuns, {
       x: "date", y: d => 1 - d.std, fill: "label",
-      r: 2, fillOpacity: 0.3, tip: true,
-      title: d => `${d.label}\n${d.date.toLocaleDateString()}\n${((1 - d.std) * 100).toFixed(1)}%`,
+      r: 2, fillOpacity: 0.3,
     }),
     Plot.line(maRuns, {
       x: "date", y: d => 1 - d.maStd, stroke: "label",
@@ -116,7 +115,7 @@ Plot.plot({
     Plot.dot(maRuns, {
       x: "date", y: d => 1 - d.maStd, fill: "label",
       r: 3.5, tip: true,
-      title: d => `${d.label}\n${d.date.toLocaleDateString()}\n${((1 - d.maStd) * 100).toFixed(1)}% (4-run avg)`,
+      title: d => `${d.label}\n${d.date.toLocaleDateString()}\nThis run: ${((1 - d.std) * 100).toFixed(1)}%\n4-run avg: ${((1 - d.maStd) * 100).toFixed(1)}%`,
     }),
   ],
 })
@@ -142,8 +141,7 @@ Plot.plot({
     }),
     Plot.dot(allRuns, {
       x: "date", y: "value", fill: "label",
-      r: 2, fillOpacity: 0.3, tip: true,
-      title: d => `${d.label}\n${d.date.toLocaleDateString()}\n${(d.value * 100).toFixed(1)}%`,
+      r: 2, fillOpacity: 0.3,
     }),
     Plot.line(maRuns, {
       x: "date", y: "maValue", stroke: "label",
@@ -152,7 +150,7 @@ Plot.plot({
     Plot.dot(maRuns, {
       x: "date", y: "maValue", fill: "label",
       r: 3.5, tip: true,
-      title: d => `${d.label}\n${d.date.toLocaleDateString()}\n${(d.maValue * 100).toFixed(1)}% (4-run avg)`,
+      title: d => `${d.label}\n${d.date.toLocaleDateString()}\nThis run: ${(d.value * 100).toFixed(1)}%\n4-run avg: ${(d.maValue * 100).toFixed(1)}%`,
     }),
   ],
 })
@@ -209,5 +207,7 @@ Inputs.table(sortedCostRows, {
 ---
 
 *Benchmarks run weekly. Each run samples 10 circuits from a family of 24 (6 circuit depths × 4 input states), 100 shots each.*
+
+*"Paused" means the platform is either retired (hardware no longer available from the provider) or temporarily suspended due to cost. Historical data remains visible on each platform's page.*
 
 <a href="/about" style="display:inline-block;margin-top:0.25rem;font-size:0.9rem;color:var(--isc-gold);font-weight:600;text-decoration:none;border-bottom:1.5px solid var(--isc-gold)">Learn more about the methodology →</a>
