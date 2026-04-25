@@ -19,6 +19,15 @@ const sortedSummary = [...summary].sort((a, b) => {
   const so = order(a.status) - order(b.status);
   return so !== 0 ? so : a.platform.localeCompare(b.platform);
 });
+// Consistency score: (1 − avg within-run std dev) × 100%, 4-run rolling average
+const consistencyScores = Object.fromEntries(
+  summary.map(p => {
+    const recent = p.sparkline.slice(-4);
+    if (!recent.length) return [p.platform, null];
+    const avgStd = recent.reduce((s, d) => s + d.std, 0) / recent.length;
+    return [p.platform, (1 - avgStd) * 100];
+  })
+);
 ```
 
 <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
@@ -33,9 +42,9 @@ ${sortedSummary.map(p => html`
                                            html`<a href="/ionq">IonQ ${p.backend}</a>`}
       <span class="badge ${statusClass[p.status]}">${statusLabel[p.status]}</span>
     </div>
-    ${p.latest_success != null ? html`
-      <div class="metric">${(p.latest_success * 100).toFixed(1)}%</div>
-      <div class="metric-label">Latest run success rate</div>
+    ${consistencyScores[p.platform] != null ? html`
+      <div class="metric">${consistencyScores[p.platform].toFixed(1)}%</div>
+      <div class="metric-label">Consistency score</div>
       <div style="margin-top: 0.75rem; font-size: 0.85rem; color: var(--isc-muted)">
         ${p.n_runs} runs · ${p.n_circuits} circuits<br>last run ${p.latest_run}
       </div>
@@ -46,7 +55,7 @@ ${sortedSummary.map(p => html`
 
 ## Consistency over time
 
-Within-run standard deviation per run — lower is more consistent.
+Within-run consistency score (1 − std dev) per run — higher is more consistent. Bold line is the 4-run rolling average; faded dots are individual runs.
 
 ```js
 const PLATFORM_LABEL = {
@@ -62,9 +71,24 @@ const PLATFORM_COLOR = {
 const allRuns = summary.flatMap(p =>
   p.sparkline.map(d => ({...d, label: PLATFORM_LABEL[p.platform] ?? p.platform, date: new Date(d.date)}))
 );
-const volatilityRuns = allRuns.filter(d => d.std > 0);
 const colorDomain = Object.values(PLATFORM_LABEL);
 const colorRange  = Object.values(PLATFORM_COLOR);
+
+// 4-run rolling averages per platform
+function rollingMean(vals, k) {
+  return vals.map((_, i) => {
+    const slice = vals.slice(Math.max(0, i - k + 1), i + 1);
+    return slice.reduce((s, v) => s + v, 0) / slice.length;
+  });
+}
+const byLabel = {};
+allRuns.forEach(d => (byLabel[d.label] = byLabel[d.label] || []).push(d));
+const maRuns = Object.values(byLabel).flatMap(runs => {
+  const sorted = runs.slice().sort((a, b) => a.date - b.date);
+  const maStd   = rollingMean(sorted.map(d => d.std),   4);
+  const maValue = rollingMean(sorted.map(d => d.value), 4);
+  return sorted.map((d, i) => ({...d, maStd: maStd[i], maValue: maValue[i]}));
+});
 ```
 
 ```js
@@ -72,24 +96,30 @@ Plot.plot({
   width: 900,
   height: 220,
   marginLeft: 55,
-  y: {label: "Within-run std dev", tickFormat: d => `${(d * 100).toFixed(1)}%`},
+  y: {label: "Consistency score", tickFormat: d => `${(d * 100).toFixed(0)}%`},
   x: {type: "utc", label: null},
   color: {domain: colorDomain, range: colorRange, legend: true},
   marks: [
-    Plot.line(volatilityRuns, {
-      x: "date", y: "std", stroke: "label",
-      strokeWidth: 1.5, curve: "monotone-x",
+    Plot.dot(allRuns, {
+      x: "date", y: d => 1 - d.std, fill: "label",
+      r: 2, fillOpacity: 0.2,
     }),
-    Plot.dot(volatilityRuns, {
-      x: "date", y: "std", fill: "label",
-      r: 3, tip: true,
-      title: d => `${d.label}\n${d.date.toLocaleDateString()}\nσ = ${(d.std * 100).toFixed(1)}%`,
+    Plot.line(maRuns, {
+      x: "date", y: d => 1 - d.maStd, stroke: "label",
+      strokeWidth: 2.5, curve: "monotone-x",
+    }),
+    Plot.dot(maRuns, {
+      x: "date", y: d => 1 - d.maStd, fill: "label",
+      r: 3.5, tip: true,
+      title: d => `${d.label}\n${d.date.toLocaleDateString()}\n${((1 - d.maStd) * 100).toFixed(1)}% (4-run avg)`,
     }),
   ],
 })
 ```
 
 ## Success probability over time
+
+Bold line is the 4-run rolling average; faded dots are individual runs.
 
 ```js
 Plot.plot({
@@ -101,14 +131,18 @@ Plot.plot({
   color: {domain: colorDomain, range: colorRange, legend: true},
   marks: [
     Plot.ruleY([1], {stroke: "#e2e8f0"}),
-    Plot.line(allRuns, {
-      x: "date", y: "value", stroke: "label",
-      strokeWidth: 2, curve: "monotone-x",
-    }),
     Plot.dot(allRuns, {
       x: "date", y: "value", fill: "label",
-      r: 3, tip: true,
-      title: d => `${d.label}\n${d.date.toLocaleDateString()}\n${(d.value * 100).toFixed(1)}%`,
+      r: 2, fillOpacity: 0.2,
+    }),
+    Plot.line(maRuns, {
+      x: "date", y: "maValue", stroke: "label",
+      strokeWidth: 2.5, curve: "monotone-x",
+    }),
+    Plot.dot(maRuns, {
+      x: "date", y: "maValue", fill: "label",
+      r: 3.5, tip: true,
+      title: d => `${d.label}\n${d.date.toLocaleDateString()}\n${(d.maValue * 100).toFixed(1)}% (4-run avg)`,
     }),
   ],
 })
