@@ -1,5 +1,6 @@
 """
-Data loader: IonQ Forte-1 results.
+Data loader: IonQ Forte-1 (via AWS Braket) results.
+Reads data/ionq_braket/results.csv (separate from the direct-API CSV).
 """
 import json
 import sys
@@ -8,7 +9,7 @@ from pathlib import Path
 import pandas as pd
 
 repo_root = Path(__file__).parents[3]
-csv_path = repo_root / "data" / "ionq" / "results.csv"
+csv_path = repo_root / "data" / "ionq_braket" / "results.csv"
 
 if not csv_path.exists():
     json.dump({"runs": [], "circuits": [], "by_length": [], "by_input": []}, sys.stdout)
@@ -16,7 +17,10 @@ if not csv_path.exists():
 
 df = pd.read_csv(csv_path, parse_dates=["run_date"], dtype={"input_bits": str})
 df = df[~df["notes"].fillna("").str.contains("dry_run|simulator")]
-df = df[df["backend"].str.contains("Forte", na=False)]
+
+if df.empty:
+    json.dump({"runs": [], "circuits": [], "by_length": [], "by_input": []}, sys.stdout)
+    sys.exit(0)
 
 runs = (
     df.groupby("run_date")["success_probability"]
@@ -46,8 +50,8 @@ by_input = (
 ).round(4)
 
 output = {
-    "platform": "ionq_forte",
-    "backend": "Forte-1",
+    "platform": "ionq_forte_braket",
+    "backend": "Forte-1 (Braket)",
     "runs": runs.to_dict(orient="records"),
     "circuits": circuits.to_dict(orient="records"),
     "by_length": by_length.to_dict(orient="records"),

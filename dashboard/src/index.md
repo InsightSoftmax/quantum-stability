@@ -38,8 +38,9 @@ ${sortedSummary.map(p => html`
         p.platform === "rigetti_ankaa"   ? html`<a href="/rigetti-ankaa">Rigetti ${p.backend}</a>` :
         p.platform === "aqt"             ? html`<a href="/aqt">AQT ${p.backend}</a>` :
         p.platform === "ibm"             ? html`<a href="/ibm">IBM ${p.backend}</a>` :
-        p.platform === "ionq_forte"      ? html`<a href="/ionq-forte">IonQ ${p.backend}</a>` :
-                                           html`<a href="/ionq">IonQ ${p.backend}</a>`}
+        p.platform === "ionq_forte_direct"  ? html`<a href="/ionq-forte-direct">IonQ ${p.backend}</a>` :
+        p.platform === "ionq_forte_braket"  ? html`<a href="/ionq-forte-braket">IonQ ${p.backend}</a>` :
+                                              html`<a href="/ionq">IonQ ${p.backend}</a>`}
       <span class="badge ${statusClass[p.status]}">${statusLabel[p.status]}</span>
     </div>
     ${consistencyScores[p.platform] != null ? html`
@@ -60,12 +61,12 @@ Within-run consistency score (1 - std dev) per run — higher is more consistent
 ```js
 const PLATFORM_LABEL = {
   aqt: "AQT IBEX", ibm: "IBM Brisbane",
-  ionq: "IonQ Aria-1", ionq_forte: "IonQ Forte-1",
+  ionq: "IonQ Aria-1", ionq_forte_direct: "IonQ Forte-1 (direct)", ionq_forte_braket: "IonQ Forte-1 (Braket)",
   rigetti_ankaa: "Rigetti Ankaa-3", rigetti_cepheus: "Rigetti Cepheus-1-108Q",
 };
 const PLATFORM_COLOR = {
   aqt: "#363D47", ibm: "#1192E8",
-  ionq: "#74737B", ionq_forte: "#99979D",
+  ionq: "#74737B", ionq_forte_direct: "#99979D", ionq_forte_braket: "#6B8CAE",
   rigetti_ankaa: "#A07800", rigetti_cepheus: "#CC8A00",
 };
 const allRuns = summary.flatMap(p =>
@@ -163,12 +164,13 @@ Plot.plot({
 ```js
 const PLATFORM_NAME = {
   aqt: "AQT IBEX (direct)", ibm: "IBM Brisbane",
-  ionq: "IonQ Aria-1", ionq_forte: "IonQ Forte-1",
+  ionq: "IonQ Aria-1", ionq_forte_direct: "IonQ Forte-1 (direct)", ionq_forte_braket: "IonQ Forte-1 (Braket)",
   rigetti_ankaa: "Rigetti Ankaa-3", rigetti_cepheus: "Rigetti Cepheus-1-108Q",
 };
 const ACCESS = {
   aqt: "qiskit-aqt-provider", ibm: "Qiskit Runtime (historical)",
-  ionq: "AWS Braket (historical)", ionq_forte: "IonQ REST API (historical)",
+  ionq: "AWS Braket (historical)", ionq_forte_direct: "IonQ REST API (historical)",
+  ionq_forte_braket: "AWS Braket",
   rigetti_ankaa: "AWS Braket (historical)", rigetti_cepheus: "AWS Braket",
 };
 const costRows = [
@@ -202,7 +204,7 @@ Inputs.table(sortedCostRows, {
 })
 ```
 
-*AQT pricing from quotation Q2511001 (Nov 2025), converted at EUR/USD ≈ 1.09. IonQ figure is historical (Aria-1 at $0.03/shot); current Forte would be ~$83/run.*
+*AQT pricing from quotation Q2511001 (Nov 2025), converted at EUR/USD ≈ 1.09. IonQ Aria-1 figure is historical ($0.03/shot via Braket). Forte-1 (direct) cost based on observed billing; Forte-1 (Braket) at published Braket rates.*
 
 ---
 

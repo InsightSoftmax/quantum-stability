@@ -7,6 +7,7 @@ export default {
       name: "Active Platforms",
       pages: [
         {name: "AQT IBEX", path: "/aqt"},
+        {name: "IonQ Forte-1 (Braket)", path: "/ionq-forte-braket"},
         {name: "Rigetti Cepheus-1-108Q", path: "/rigetti-cepheus"},
       ]
     },
@@ -15,7 +16,7 @@ export default {
       pages: [
         {name: "IBM Brisbane", path: "/ibm"},
         {name: "IonQ Aria-1", path: "/ionq"},
-        {name: "IonQ Forte-1", path: "/ionq-forte"},
+        {name: "IonQ Forte-1 (direct)", path: "/ionq-forte-direct"},
         {name: "Rigetti Ankaa-3", path: "/rigetti-ankaa"},
       ]
     },
