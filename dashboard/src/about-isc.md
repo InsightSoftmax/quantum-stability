@@ -6,7 +6,7 @@ title: About Insight Softmax
 
 [Insight Softmax](https://insightsoftmax.com/) is a software company focused on applied quantum computing and AI infrastructure.
 
-The Quantum Stability Monitor is one of our open research initiatives — a longitudinal benchmarking program that tracks the real-world reliability of quantum hardware over time. Rather than one-off performance snapshots, we run the same circuits weekly on each platform and ask: *is this hardware getting more or less consistent?*
+The Quantum Stability Monitor is one of our open research initiatives — a longitudinal benchmarking program that tracks the real-world reliability of quantum hardware over time. Rather than one-off performance snapshots, we run the same circuits weekly on each platform and ask: *over the long haul, does this hardware behave the same week to week?*
 
 ## Past quantum work
 

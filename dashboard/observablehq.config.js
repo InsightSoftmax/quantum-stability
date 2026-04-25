@@ -23,6 +23,6 @@ export default {
     {name: "About Insight Softmax", path: "/about-isc"},
     {name: "Contact", path: "/contact"},
   ],
-  head: '<link rel="stylesheet" href="/theme.css">',
+  head: '<link rel="stylesheet" href="/theme.css"><link rel="icon" href="/favicon.svg" type="image/svg+xml">',
   footer: 'Quantum Stability Monitor — longitudinal QPU benchmarking by <a href="https://insightsoftmax.com/" target="_blank" rel="noopener">Insight Softmax</a>',
 };
