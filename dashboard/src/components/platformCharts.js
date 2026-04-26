@@ -2,12 +2,28 @@ import * as Plot from "npm:@observablehq/plot";
 
 const DOMAIN_FLOOR = 0.7;
 
+// 4-run trailing rolling mean of a numeric field across an already-sorted array.
+function addRollingMean(runs, fields, k = 4) {
+  return runs.map((d, i) => {
+    const slice = runs.slice(Math.max(0, i - k + 1), i + 1);
+    const means = Object.fromEntries(
+      fields.map(f => [
+        `ma_${f}`,
+        slice.reduce((s, r) => s + r[f], 0) / slice.length,
+      ])
+    );
+    return {...d, ...means};
+  });
+}
+
 /**
  * Time series of weekly mean success probability with ±1σ band.
+ * Faded line/dots = individual runs; bold line/dots = 4-run rolling average.
  */
 export function successTimeSeries(data, {color = "#363D47", width = 900} = {}) {
-  const runs = data.runs.map(d => ({...d, date: new Date(d.run_date)}));
-  const yMin = Math.max(DOMAIN_FLOOR, Math.min(...runs.map(d => d.mean_success)) - 0.05);
+  const allRuns = data.runs.map(d => ({...d, date: new Date(d.run_date)}));
+  const maRuns  = addRollingMean(allRuns, ["mean_success"]);
+  const yMin    = Math.max(DOMAIN_FLOOR, Math.min(...allRuns.map(d => d.mean_success)) - 0.05);
 
   return Plot.plot({
     width,
@@ -21,57 +37,71 @@ export function successTimeSeries(data, {color = "#363D47", width = 900} = {}) {
     x: {type: "utc", label: null},
     marks: [
       Plot.ruleY([1], {stroke: "#e2e8f0", strokeDasharray: "4,4"}),
-      Plot.areaY(runs, {
+      Plot.areaY(allRuns, {
         x: "date",
         y1: d => Math.max(yMin, d.mean_success - d.std_success),
         y2: d => Math.min(1, d.mean_success + d.std_success),
-        fill: color,
-        fillOpacity: 0.12,
+        fill: color, fillOpacity: 0.08,
       }),
-      Plot.line(runs, {
+      Plot.line(allRuns, {
         x: "date", y: "mean_success",
-        stroke: color, strokeWidth: 2, curve: "monotone-x",
+        stroke: color, strokeWidth: 1, strokeOpacity: 0.3, curve: "monotone-x",
       }),
-      Plot.dot(runs, {
+      Plot.dot(allRuns, {
         x: "date", y: "mean_success",
-        fill: color, r: 4, tip: true,
-        title: d => `${d.run_date}\n${(d.mean_success * 100).toFixed(1)}% ± ${(d.std_success * 100).toFixed(1)}%\n${d.n_circuits} circuits`,
+        fill: color, r: 2, fillOpacity: 0.3,
+      }),
+      Plot.line(maRuns, {
+        x: "date", y: "ma_mean_success",
+        stroke: color, strokeWidth: 2.5, curve: "monotone-x",
+      }),
+      Plot.dot(maRuns, {
+        x: "date", y: "ma_mean_success",
+        fill: color, r: 3.5, tip: true,
+        title: d => `${d.run_date}\nThis run: ${(d.mean_success * 100).toFixed(1)}% ± ${(d.std_success * 100).toFixed(1)}%\n4-run avg: ${(d.ma_mean_success * 100).toFixed(1)}%\n${d.n_circuits} circuits`,
       }),
     ],
   });
 }
 
 /**
- * Volatility over time — run-level standard deviation, showing whether
- * the platform is becoming more or less consistent.
+ * Consistency over time — (1 - within-run std dev), higher is more consistent.
+ * Faded line/dots = individual runs; bold line/dots = 4-run rolling average.
  */
 export function volatilityTimeSeries(data, {color = "#363D47", width = 900} = {}) {
-  const runs = data.runs
-    .filter(d => d.std_success > 0)
-    .map(d => ({...d, date: new Date(d.run_date)}));
+  const allRuns = data.runs.map(d => ({
+    ...d,
+    date: new Date(d.run_date),
+    consistency: 1 - d.std_success,
+  }));
+  const maRuns = addRollingMean(allRuns, ["consistency"]);
 
   return Plot.plot({
     width,
     height: 220,
     marginLeft: 55,
     y: {
-      label: "Within-run std dev",
-      tickFormat: d => `${(d * 100).toFixed(1)}%`,
+      label: "Consistency score",
+      tickFormat: d => `${(d * 100).toFixed(0)}%`,
     },
     x: {type: "utc", label: null},
     marks: [
-      Plot.areaY(runs, {
-        x: "date", y: "std_success",
-        fill: color, fillOpacity: 0.15, curve: "monotone-x",
+      Plot.line(allRuns, {
+        x: "date", y: "consistency",
+        stroke: color, strokeWidth: 1, strokeOpacity: 0.3, curve: "monotone-x",
       }),
-      Plot.line(runs, {
-        x: "date", y: "std_success",
-        stroke: color, strokeWidth: 1.5, curve: "monotone-x",
+      Plot.dot(allRuns, {
+        x: "date", y: "consistency",
+        fill: color, r: 2, fillOpacity: 0.3,
       }),
-      Plot.dot(runs, {
-        x: "date", y: "std_success",
-        fill: color, r: 3, tip: true,
-        title: d => `${d.run_date}\nσ = ${(d.std_success * 100).toFixed(1)}%`,
+      Plot.line(maRuns, {
+        x: "date", y: "ma_consistency",
+        stroke: color, strokeWidth: 2.5, curve: "monotone-x",
+      }),
+      Plot.dot(maRuns, {
+        x: "date", y: "ma_consistency",
+        fill: color, r: 3.5, tip: true,
+        title: d => `${d.run_date}\nThis run: ${(d.consistency * 100).toFixed(1)}%\n4-run avg: ${(d.ma_consistency * 100).toFixed(1)}%`,
       }),
     ],
   });

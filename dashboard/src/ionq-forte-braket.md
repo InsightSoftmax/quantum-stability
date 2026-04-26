@@ -1,28 +1,28 @@
 ---
-title: AQT IBEX
+title: IonQ Forte-1 (Braket)
 ---
 
 ```js
 import {successTimeSeries, volatilityTimeSeries, boxByLength, successByLength, successByInput, successSurface3D} from "./components/platformCharts.js";
-const data = await FileAttachment("data/aqt.json").json();
+const data = await FileAttachment("data/ionq-forte-braket.json").json();
 ```
 
-# AQT IBEX
+# IonQ Forte-1 (Braket)
 
-Trapped-ion QPU accessed directly via `qiskit-aqt-provider`. Hardware access window: Tuesdays and Wednesdays 10:00–17:00 CET. Automated weekly runs began April 2026.
+Trapped-ion QPU accessed via AWS Braket (us-east-1). Automated monthly runs on the 15th of each month. At $83/run this is significantly cheaper than the direct IonQ API path (~$259/run).
 
 <div style="display: flex; gap: 2rem; margin: 1rem 0;">
   <div class="platform-card" style="flex: 1">
-    <div class="metric">${(data.runs.at(-1)?.mean_success * 100).toFixed(1)}%</div>
+    <div class="metric">${data.runs.length > 0 ? (data.runs.at(-1)?.mean_success * 100).toFixed(1) + "%" : "—"}</div>
     <div class="metric-label">Latest run success rate</div>
   </div>
   <div class="platform-card" style="flex: 1">
-    <div class="metric">${(data.runs.reduce((s, d) => s + d.mean_success, 0) / data.runs.length * 100).toFixed(1)}%</div>
+    <div class="metric">${data.runs.length > 0 ? (data.runs.reduce((s, d) => s + d.mean_success, 0) / data.runs.length * 100).toFixed(1) + "%" : "—"}</div>
     <div class="metric-label">All-time mean</div>
   </div>
   <div class="platform-card" style="flex: 1">
     <div class="metric">${data.runs.length}</div>
-    <div class="metric-label">Runs (2026)</div>
+    <div class="metric-label">Runs</div>
   </div>
   <div class="platform-card" style="flex: 1">
     <div class="metric">${data.circuits.length}</div>
@@ -30,12 +30,14 @@ Trapped-ion QPU accessed directly via `qiskit-aqt-provider`. Hardware access win
   </div>
 </div>
 
+${data.runs.length === 0 ? html`<div style="color: var(--isc-muted); font-style: italic; margin: 2rem 0;">No data yet — first automated run scheduled for the 15th of the month.</div>` : ""}
+
 ## Consistency over time
 
 Within-run consistency score (1 - std dev) — the primary stability metric. Higher is more consistent. Faded line and dots are individual runs; bold line and larger dots are the 4-run rolling average.
 
 ```js
-volatilityTimeSeries(data, {color: "#363D47"})
+volatilityTimeSeries(data, {color: "#6B8CAE"})
 ```
 
 ## Success probability over time
@@ -43,7 +45,7 @@ volatilityTimeSeries(data, {color: "#363D47"})
 Success probability for a given circuit is the fraction of shots that produced the correct output — where "correct" is the deterministic, noise-free answer computed by classical simulation. Each point is the mean across the circuits sampled that run. The bold line is the 4-run rolling average; faded line and dots are individual runs. The shaded band shows ±1 standard deviation within the run.
 
 ```js
-successTimeSeries(data, {color: "#363D47"})
+successTimeSeries(data, {color: "#6B8CAE"})
 ```
 
 ## Performance breakdown
@@ -55,13 +57,13 @@ How success probability varies across circuit depth and input state, aggregated 
 <p style="margin-bottom:0">Each point is one (depth, input state) combination. Point size reflects how many circuits were run with that combination. Drag to rotate.</p>
 
 ```js
-successSurface3D(data, {color: "#363D47"})
+successSurface3D(data, {color: "#6B8CAE"})
 ```
 
 ### Distribution by circuit depth
 
 ```js
-boxByLength(data, {color: "#363D47"})
+boxByLength(data, {color: "#6B8CAE"})
 ```
 
 ### Mean success by circuit depth
@@ -69,7 +71,7 @@ boxByLength(data, {color: "#363D47"})
 Mean success probability for each depth, averaged across all runs. A declining trend confirms that noise accumulates as circuit depth increases.
 
 ```js
-successByLength(data, {color: "#363D47"})
+successByLength(data, {color: "#6B8CAE"})
 ```
 
 ### Mean success by input state
@@ -77,7 +79,7 @@ successByLength(data, {color: "#363D47"})
 Does the initial qubit state affect results? Ideally it shouldn't — deviations suggest state-preparation or readout asymmetry.
 
 ```js
-successByInput(data, {color: "#363D47"})
+successByInput(data, {color: "#6B8CAE"})
 ```
 
 ## All runs

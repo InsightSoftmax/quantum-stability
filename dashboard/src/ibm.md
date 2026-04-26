@@ -32,7 +32,7 @@ Superconducting QPU (Eagle r3, 127 qubits) accessed via Qiskit Runtime. Historic
 
 ## Consistency over time
 
-Within-run standard deviation per run — the primary stability metric for this benchmark. Lower is more consistent.
+Within-run consistency score (1 - std dev) — the primary stability metric. Higher is more consistent. Faded line and dots are individual runs; bold line and larger dots are the 4-run rolling average.
 
 ```js
 volatilityTimeSeries(data, {color: "#1192E8"})
@@ -40,7 +40,7 @@ volatilityTimeSeries(data, {color: "#1192E8"})
 
 ## Success probability over time
 
-Success probability for a given circuit is the fraction of shots that produced the correct output — where "correct" is the deterministic, noise-free answer computed by classical simulation. Each point is the mean across the circuits sampled that run. The shaded band shows ±1 standard deviation within the run.
+Success probability for a given circuit is the fraction of shots that produced the correct output — where "correct" is the deterministic, noise-free answer computed by classical simulation. Each point is the mean across the circuits sampled that run. The bold line is the 4-run rolling average; faded line and dots are individual runs. The shaded band shows ±1 standard deviation within the run.
 
 ```js
 successTimeSeries(data, {color: "#1192E8"})
