@@ -192,11 +192,12 @@ const costRows = [
       schedule,
       status: p.status,
       cost_per_run: p.cost_per_run_usd,
+      annual_52: p.cost_per_run_usd * 52,
       annual_actual: actualAnnual(p.cost_per_run_usd, schedule),
     };
   }),
   {platform: "AQT IBEX (via Braket)", access: "AWS Braket", schedule: "Weekly",
-   status: "alternative", cost_per_run: 26.50, annual_actual: 26.50 * 52},
+   status: "alternative", cost_per_run: 26.50, annual_52: 26.50 * 52, annual_actual: 26.50 * 52},
 ];
 const sortedCostRows = [...costRows].sort((a, b) => {
   const order = s => s === "active" ? 0 : 1;
@@ -208,12 +209,13 @@ const sortedCostRows = [...costRows].sort((a, b) => {
 ```js
 Inputs.table(sortedCostRows, {
   select: false,
-  columns: ["platform", "access", "schedule", "status", "cost_per_run", "annual_actual"],
-  header: {platform: "Platform", access: "Access", schedule: "Schedule", status: "Status", cost_per_run: "Per run", annual_actual: "Actual annual"},
+  columns: ["platform", "access", "schedule", "status", "cost_per_run", "annual_actual", "annual_52"],
+  header: {platform: "Platform", access: "Access", schedule: "Schedule", status: "Status", cost_per_run: "Per run", annual_actual: "Actual annual", annual_52: "Annual (52×)"},
   format: {
     status: d => html`<span class="badge ${d === "active" ? "badge-active" : "badge-historical"}">${d === "active" ? "Active" : "Paused"}</span>`,
     cost_per_run: d => `$${d.toFixed(2)}`,
     annual_actual: d => d != null ? `$${d.toFixed(0)}` : "—",
+    annual_52: d => `$${d.toFixed(0)}`,
   },
 })
 ```
