@@ -50,6 +50,7 @@ for platform, meta in PLATFORMS.items():
             "platform": platform,
             "backend": meta["backend"],
             "status": meta["status"],
+            "cost_per_run_usd": meta["cost_per_run_usd"],
             "latest_run": None,
             "latest_success": None,
             "overall_mean": None,
