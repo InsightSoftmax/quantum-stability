@@ -49,7 +49,7 @@ ${sortedSummary.map(p => html`
       <div style="margin-top: 0.75rem; font-size: 0.85rem; color: var(--isc-muted)">
         ${p.n_runs} runs · ${p.n_circuits} circuits<br>last run ${p.latest_run}
       </div>
-    ` : html`<div style="color: var(--isc-muted); font-size: 0.9rem; min-height: 5.5rem; display: flex; align-items: flex-start; padding-top: 0.25rem;">No data yet</div>`}
+    ` : html`<div style="color: var(--isc-muted); font-size: 0.9rem; min-height: 7.5rem; display: flex; align-items: flex-start; padding-top: 0.25rem;">No data yet</div>`}
   </div>
 `)}
 </div>
