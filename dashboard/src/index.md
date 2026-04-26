@@ -173,16 +173,30 @@ const ACCESS = {
   ionq_forte_braket: "AWS Braket",
   rigetti_ankaa: "AWS Braket (historical)", rigetti_cepheus: "AWS Braket",
 };
+const SCHEDULE = {
+  aqt: "Weekly", ibm: "—",
+  ionq: "—", ionq_forte_direct: "Monthly", ionq_forte_braket: "Monthly",
+  rigetti_ankaa: "—", rigetti_cepheus: "Weekly",
+};
+function actualAnnual(cost, schedule) {
+  if (schedule === "Weekly")  return cost * 52;
+  if (schedule === "Monthly") return cost * 12;
+  return null;
+}
 const costRows = [
-  ...summary.filter(p => p.cost_per_run_usd != null).map(p => ({
-    platform: PLATFORM_NAME[p.platform] ?? p.platform,
-    access: ACCESS[p.platform] ?? "—",
-    status: p.status,
-    cost_per_run: p.cost_per_run_usd,
-    annual_52: p.cost_per_run_usd * 52,
-  })),
-  {platform: "AQT IBEX (via Braket)", access: "AWS Braket", status: "alternative",
-   cost_per_run: 26.50, annual_52: 26.50 * 52},
+  ...summary.filter(p => p.cost_per_run_usd != null).map(p => {
+    const schedule = SCHEDULE[p.platform] ?? "—";
+    return {
+      platform: PLATFORM_NAME[p.platform] ?? p.platform,
+      access: ACCESS[p.platform] ?? "—",
+      schedule,
+      status: p.status,
+      cost_per_run: p.cost_per_run_usd,
+      annual_actual: actualAnnual(p.cost_per_run_usd, schedule),
+    };
+  }),
+  {platform: "AQT IBEX (via Braket)", access: "AWS Braket", schedule: "Weekly",
+   status: "alternative", cost_per_run: 26.50, annual_actual: 26.50 * 52},
 ];
 const sortedCostRows = [...costRows].sort((a, b) => {
   const order = s => s === "active" ? 0 : 1;
@@ -194,12 +208,12 @@ const sortedCostRows = [...costRows].sort((a, b) => {
 ```js
 Inputs.table(sortedCostRows, {
   select: false,
-  columns: ["platform", "access", "status", "cost_per_run", "annual_52"],
-  header: {platform: "Platform", access: "Access", status: "Status", cost_per_run: "Per run", annual_52: "Annual (52×)"},
+  columns: ["platform", "access", "schedule", "status", "cost_per_run", "annual_actual"],
+  header: {platform: "Platform", access: "Access", schedule: "Schedule", status: "Status", cost_per_run: "Per run", annual_actual: "Actual annual"},
   format: {
     status: d => html`<span class="badge ${d === "active" ? "badge-active" : "badge-historical"}">${d === "active" ? "Active" : "Paused"}</span>`,
     cost_per_run: d => `$${d.toFixed(2)}`,
-    annual_52: d => `$${d.toFixed(0)}`,
+    annual_actual: d => d != null ? `$${d.toFixed(0)}` : "—",
   },
 })
 ```
