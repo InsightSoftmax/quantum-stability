@@ -176,7 +176,7 @@ const ACCESS = {
 const SCHEDULE = {
   aqt: "Weekly", ibm: "—",
   ionq: "—", ionq_forte_direct: "Monthly", ionq_forte_braket: "Monthly",
-  rigetti_ankaa: "—", rigetti_cepheus: "Weekly",
+  rigetti_ankaa: "Weekly", rigetti_cepheus: "Weekly",
 };
 function actualAnnual(cost, schedule) {
   if (schedule === "Weekly")  return cost * 52;
