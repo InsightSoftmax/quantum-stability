@@ -175,7 +175,7 @@ const ACCESS = {
 };
 const SCHEDULE = {
   aqt: "Weekly", ibm: "—",
-  ionq: "—", ionq_forte_direct: "Monthly", ionq_forte_braket: "Monthly",
+  ionq: "Weekly", ionq_forte_direct: "Monthly", ionq_forte_braket: "Monthly",
   rigetti_ankaa: "Weekly", rigetti_cepheus: "Weekly",
 };
 function actualAnnual(cost, schedule) {
@@ -220,7 +220,7 @@ Inputs.table(sortedCostRows, {
 })
 ```
 
-*AQT pricing from quotation Q2511001 (Nov 2025), converted at EUR/USD ≈ 1.09. IonQ Aria-1 figure is historical ($0.03/shot via Braket). Forte-1 (direct) cost based on observed billing; Forte-1 (Braket) at published Braket rates.*
+*AQT pricing converted at EUR/USD ≈ 1.09. IonQ Aria-1 figure is historical ($0.03/shot via Braket). Forte-1 (direct) cost based on observed billing; Forte-1 (Braket) at published Braket rates.*
 
 ---
 
