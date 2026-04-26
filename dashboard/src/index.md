@@ -211,7 +211,10 @@ Inputs.table(sortedCostRows, {
   select: false,
   columns: ["platform", "access", "schedule", "status", "cost_per_run", "annual_actual", "annual_52"],
   header: {platform: "Platform", access: "Access", schedule: "Schedule", status: "Status", cost_per_run: "Per run", annual_actual: "Actual annual", annual_52: "Annual (52×)"},
+  width: {platform: 210, access: 190, schedule: 90, status: 80, cost_per_run: 80, annual_actual: 110, annual_52: 100},
   format: {
+    platform: d => html`<span title="${d}">${d}</span>`,
+    access: d => html`<span title="${d}">${d}</span>`,
     status: d => html`<span class="badge ${d === "active" ? "badge-active" : "badge-historical"}">${d === "active" ? "Active" : "Paused"}</span>`,
     cost_per_run: d => `$${d.toFixed(2)}`,
     annual_actual: d => d != null ? `$${d.toFixed(0)}` : "—",
