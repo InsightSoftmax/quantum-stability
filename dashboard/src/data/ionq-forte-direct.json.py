@@ -12,7 +12,7 @@ repo_root = Path(__file__).parents[3]
 csv_path = repo_root / "data" / "ionq" / "results.csv"
 
 if not csv_path.exists():
-    json.dump({"runs": [], "circuits": [], "by_length": [], "by_input": []}, sys.stdout)
+    json.dump({"runs": [], "circuits": [], "by_length": [], "by_input": [], "incidents": []}, sys.stdout)
     sys.exit(0)
 
 df = pd.read_csv(csv_path, parse_dates=["run_date"], dtype={"input_bits": str})
@@ -46,6 +46,9 @@ by_input = (
     .reset_index()
 ).round(4)
 
+inc_path = repo_root / "incidents" / "ionq" / "incidents.csv"
+incidents = pd.read_csv(inc_path, dtype=str).fillna("").to_dict(orient="records") if inc_path.exists() else []
+
 output = {
     "platform": "ionq_forte_direct",
     "backend": "Forte-1 (direct)",
@@ -53,6 +56,7 @@ output = {
     "circuits": circuits.to_dict(orient="records"),
     "by_length": by_length.to_dict(orient="records"),
     "by_input": by_input.to_dict(orient="records"),
+    "incidents": incidents,
 }
 
 json.dump(output, sys.stdout)

@@ -12,7 +12,7 @@ repo_root = Path(__file__).parents[3]
 csv_path = repo_root / "data" / "rigetti" / "results.csv"
 
 if not csv_path.exists():
-    json.dump({"runs": [], "circuits": [], "by_length": [], "by_input": []}, sys.stdout)
+    json.dump({"runs": [], "circuits": [], "by_length": [], "by_input": [], "incidents": []}, sys.stdout)
     sys.exit(0)
 
 df = pd.read_csv(csv_path, parse_dates=["run_date"], dtype={"input_bits": str})
@@ -55,6 +55,9 @@ by_input = (
 by_input["std_success"] = by_input["std_success"].fillna(0)
 by_input = by_input.round(4)
 
+inc_path = repo_root / "incidents" / "rigetti" / "incidents.csv"
+incidents = pd.read_csv(inc_path, dtype=str).fillna("").to_dict(orient="records") if inc_path.exists() else []
+
 output = {
     "platform": "rigetti_cepheus",
     "backend": "Cepheus-1-108Q",
@@ -62,6 +65,7 @@ output = {
     "circuits": circuits.to_dict(orient="records"),
     "by_length": by_length.to_dict(orient="records"),
     "by_input": by_input.to_dict(orient="records"),
+    "incidents": incidents,
 }
 
 json.dump(output, sys.stdout)

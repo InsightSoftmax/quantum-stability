@@ -19,6 +19,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+from scripts.record_incident import classify_error, record_incident
+
 # Platforms to run. Currently Rigetti and AQT are run manually by Arash —
 # uncomment here once the GitHub Actions workflow is wired up end-to-end.
 ENABLED_PLATFORMS = [
@@ -84,6 +86,18 @@ def main() -> None:
 
         except Exception as e:
             print(f"  ERROR: {e}")
+            # Use the platform key from the module if available, else fall back to module name
+            try:
+                mod = __import__(f"benchmarks.{platform_name}", fromlist=["PLATFORM"])
+                platform_key = mod.PLATFORM
+            except Exception:
+                platform_key = platform_name
+            record_incident(
+                platform=platform_key,
+                incident_type=classify_error(e),
+                error_message=str(e),
+                incident_date=run_date,
+            )
             failed.append(platform_name)
 
     if failed:
