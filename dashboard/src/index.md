@@ -131,7 +131,7 @@ Plot.plot({
   width: 900,
   height: 280,
   marginLeft: 55,
-  y: {domain: [0.7, 1.02], label: "Mean success probability", tickFormat: d => `${(d*100).toFixed(0)}%`},
+  y: {domain: [Math.floor(Math.min(...allRuns.map(d => d.value)) * 20) / 20, 1.02], label: "Mean success probability", tickFormat: d => `${(d*100).toFixed(0)}%`},
   x: {type: "utc", label: null},
   color: {domain: colorDomain, range: colorRange, legend: true},
   marks: [
