@@ -7,6 +7,7 @@ export default {
       name: "Active Platforms",
       pages: [
         {name: "AQT IBEX", path: "/aqt"},
+        {name: "AQT IBEX (Braket)", path: "/aqt-braket"},
         {name: "IonQ Forte-1 (Braket)", path: "/ionq-forte-braket"},
         {name: "Rigetti Cepheus-1-108Q", path: "/rigetti-cepheus"},
       ]

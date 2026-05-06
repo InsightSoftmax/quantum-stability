@@ -54,7 +54,9 @@ jobs:
       - name: Collect results
         if: steps.check.outputs.pending_count != '0'
         env:
-          BRAKET_RESULTS_BUCKET: ${{ vars.BRAKET_RESULTS_BUCKET }}
+          BRAKET_RESULTS_BUCKET_WEST: ${{ vars.BRAKET_RESULTS_BUCKET_WEST }}
+          BRAKET_RESULTS_BUCKET_EAST: ${{ vars.BRAKET_RESULTS_BUCKET_EAST }}
+          BRAKET_RESULTS_BUCKET_EU: ${{ vars.BRAKET_RESULTS_BUCKET_EU }}
           AQT_API_KEY: ${{ secrets.AQT_API_KEY }}
         run: uv run python scripts/collect_results.py
 
@@ -65,4 +67,4 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/ pending/
           git diff --staged --quiet || git commit -m "chore: collect benchmark results $(date -u +%Y-%m-%d)"
-          git push
+          git pull --rebase && git push
