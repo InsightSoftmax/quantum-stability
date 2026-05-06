@@ -38,6 +38,7 @@ ${sortedSummary.map(p => html`
         p.platform === "rigetti_ankaa"   ? html`<a href="/rigetti-ankaa">Rigetti ${p.backend}</a>` :
         p.platform === "aqt"             ? html`<a href="/aqt">AQT ${p.backend}</a>` :
         p.platform === "aqt_braket"      ? html`<a href="/aqt-braket">AQT ${p.backend}</a>` :
+        p.platform === "iqm_braket"      ? html`<a href="/iqm">IQM ${p.backend}</a>` :
         p.platform === "ibm"             ? html`<a href="/ibm">IBM ${p.backend}</a>` :
         p.platform === "ionq_forte_direct"  ? html`<a href="/ionq-forte-direct">IonQ ${p.backend}</a>` :
         p.platform === "ionq_forte_braket"  ? html`<a href="/ionq-forte-braket">IonQ ${p.backend}</a>` :
@@ -63,11 +64,13 @@ Within-run consistency score (1 - std dev) per run — higher is more consistent
 const PLATFORM_LABEL = {
   aqt: "AQT IBEX", aqt_braket: "AQT IBEX (Braket)", ibm: "IBM Brisbane",
   ionq: "IonQ Aria-1", ionq_forte_direct: "IonQ Forte-1 (direct)", ionq_forte_braket: "IonQ Forte-1 (Braket)",
+  iqm_braket: "IQM Garnet",
   rigetti_ankaa: "Rigetti Ankaa-3", rigetti_cepheus: "Rigetti Cepheus-1-108Q",
 };
 const PLATFORM_COLOR = {
   aqt: "#363D47", aqt_braket: "#5B7FA3", ibm: "#1192E8",
   ionq: "#74737B", ionq_forte_direct: "#99979D", ionq_forte_braket: "#6B8CAE",
+  iqm_braket: "#2E8B74",
   rigetti_ankaa: "#A07800", rigetti_cepheus: "#CC8A00",
 };
 const allRuns = summary.flatMap(p =>
@@ -166,17 +169,19 @@ Plot.plot({
 const PLATFORM_NAME = {
   aqt: "AQT IBEX (direct)", aqt_braket: "AQT IBEX (Braket)", ibm: "IBM Brisbane",
   ionq: "IonQ Aria-1", ionq_forte_direct: "IonQ Forte-1 (direct)", ionq_forte_braket: "IonQ Forte-1 (Braket)",
+  iqm_braket: "IQM Garnet",
   rigetti_ankaa: "Rigetti Ankaa-3", rigetti_cepheus: "Rigetti Cepheus-1-108Q",
 };
 const ACCESS = {
   aqt: "qiskit-aqt-provider", aqt_braket: "AWS Braket", ibm: "Qiskit Runtime (historical)",
   ionq: "AWS Braket (historical)", ionq_forte_direct: "IonQ REST API (historical)",
-  ionq_forte_braket: "AWS Braket",
+  ionq_forte_braket: "AWS Braket", iqm_braket: "AWS Braket",
   rigetti_ankaa: "AWS Braket (historical)", rigetti_cepheus: "AWS Braket",
 };
 const SCHEDULE = {
   aqt: "Weekly", aqt_braket: "Weekly", ibm: "—",
   ionq: "Weekly", ionq_forte_direct: "Monthly", ionq_forte_braket: "Monthly",
+  iqm_braket: "Weekly",
   rigetti_ankaa: "Weekly", rigetti_cepheus: "Weekly",
 };
 function actualAnnual(cost, schedule) {
