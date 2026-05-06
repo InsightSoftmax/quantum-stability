@@ -24,6 +24,8 @@ PLATFORMS = {
                         "csv_key": "rigetti", "backend_filter": "Cepheus"},
     "aqt_braket":      {"backend": "IBEX (Braket)", "status": "active",     "cost_per_run_usd": 26.50,
                         "csv_key": "aqt_braket"},
+    "iqm_braket":      {"backend": "Garnet",        "status": "active",     "cost_per_run_usd": 4.45,
+                        "csv_key": "iqm_braket"},
 }
 
 summary = []

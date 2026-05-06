@@ -8,6 +8,7 @@ export default {
       pages: [
         {name: "AQT IBEX", path: "/aqt"},
         {name: "AQT IBEX (Braket)", path: "/aqt-braket"},
+        {name: "IQM Garnet", path: "/iqm"},
         {name: "IonQ Forte-1 (Braket)", path: "/ionq-forte-braket"},
         {name: "Rigetti Cepheus-1-108Q", path: "/rigetti-cepheus"},
       ]
