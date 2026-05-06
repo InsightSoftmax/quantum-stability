@@ -3,14 +3,11 @@ AQT benchmark via AWS Braket.
 
 Authentication: OIDC-assumed IAM role (set up in infra/). No explicit credentials needed.
 SDK: amazon-braket-sdk
-Backend: AQT Pine (eu-west-2)
-Results bucket: BRAKET_RESULTS_BUCKET_EU_WEST (eu-west-2) — distinct from the IQM/eu-north-1 bucket.
+Backend: AQT IBEX Q1 (eu-north-1)
+Results bucket: BRAKET_RESULTS_BUCKET_EU (eu-north-1) — shared with IQM Garnet.
 
-Uses explicit eu-west-2 boto3 sessions throughout so this module works correctly even when
+Uses explicit eu-north-1 boto3 sessions throughout so this module works correctly even when
 the GitHub Actions workflow configures credentials with a different default region.
-
-TODO: Verify BACKEND_ARN in the AWS Braket console before the first run.
-      AQT devices on Braket: https://us-east-1.console.aws.amazon.com/braket/home#/devices
 """
 
 import importlib.metadata
@@ -21,17 +18,17 @@ from datetime import UTC, date, datetime
 from benchmarks.circuits import REFERENCE_TABLE, build_circuit_braket, sample_circuits
 
 PLATFORM = "aqt_braket"
-BACKEND_ARN = "arn:aws:braket:eu-west-2::device/qpu/aqt/Pine"  # TODO: verify in AWS console
-AWS_REGION = "eu-west-2"
+BACKEND_ARN = "arn:aws:braket:eu-north-1::device/qpu/aqt/Ibex-Q1"
+AWS_REGION = "eu-north-1"
 S3_PREFIX = "condenser-results"
 
 _TERMINAL_STATES = {"COMPLETED", "FAILED", "CANCELLED"}
 
 
 def _s3_folder() -> tuple[str, str]:
-    bucket = os.environ.get("BRAKET_RESULTS_BUCKET_EU_WEST")
+    bucket = os.environ.get("BRAKET_RESULTS_BUCKET_EU")
     if not bucket:
-        raise RuntimeError("BRAKET_RESULTS_BUCKET_EU_WEST environment variable is not set")
+        raise RuntimeError("BRAKET_RESULTS_BUCKET_EU environment variable is not set")
     return (bucket, S3_PREFIX)
 
 

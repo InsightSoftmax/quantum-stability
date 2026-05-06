@@ -9,7 +9,7 @@ const data = await FileAttachment("data/aqt-braket.json").json();
 
 # AQT IBEX (Braket)
 
-AQT trapped-ion QPU accessed via AWS Braket (eu-west-2). Weekly runs on Tuesdays, offset from the [direct API path](/aqt) by 30 minutes. At ~$26.50/run this offers a cost comparison point against AQT direct (~$25.07/run).
+AQT trapped-ion QPU accessed via AWS Braket (eu-north-1). Weekly runs on Tuesdays, offset from the [direct API path](/aqt) by 30 minutes. At ~$26.50/run this offers a cost comparison point against AQT direct (~$25.07/run).
 
 <div style="display: flex; gap: 2rem; margin: 1rem 0;">
   <div class="platform-card" style="flex: 1">

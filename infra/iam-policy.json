@@ -28,9 +28,7 @@
         "arn:aws:s3:::amazon-braket-isc-condenser-east",
         "arn:aws:s3:::amazon-braket-isc-condenser-east/*",
         "arn:aws:s3:::amazon-braket-isc-condenser-eu",
-        "arn:aws:s3:::amazon-braket-isc-condenser-eu/*",
-        "arn:aws:s3:::amazon-braket-isc-condenser-eu-west",
-        "arn:aws:s3:::amazon-braket-isc-condenser-eu-west/*"
+        "arn:aws:s3:::amazon-braket-isc-condenser-eu/*"
       ]
     }
   ]
