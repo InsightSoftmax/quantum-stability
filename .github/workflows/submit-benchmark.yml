@@ -59,6 +59,7 @@ jobs:
         env:
           BRAKET_RESULTS_BUCKET_WEST: ${{ vars.BRAKET_RESULTS_BUCKET_WEST }}
           AQT_API_KEY: ${{ secrets.AQT_API_KEY }}
+          IBM_QUANTUM_TOKEN: ${{ secrets.IBM_QUANTUM_TOKEN }}
           DRY_RUN: ${{ inputs.dry_run || 'false' }}
           USE_SIMULATOR: ${{ inputs.simulator || 'false' }}
           PLATFORM: ${{ inputs.platform || '' }}
