@@ -24,8 +24,8 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 ENABLED_PLATFORMS = [
     "rigetti_braket",  # active: Rigetti Ankaa-3 via AWS Braket (us-west-1)
     "aqt_qiskit",      # active: AQT via qiskit-aqt-provider; requires AQT_API_KEY secret
+    "ibm_qiskit",      # active: IBM Brisbane via Qiskit Runtime; requires IBM_QUANTUM_TOKEN secret
     # "ionq_braket",   # paused: budget
-    # "ibm_qiskit",    # pending: locate Sami's notebook and existing results
 ]
 
 
