@@ -24,14 +24,9 @@ from datetime import UTC, date, datetime
 from benchmarks.circuits import REFERENCE_TABLE, build_circuit_qiskit, sample_circuits
 
 PLATFORM = "ibm"
-DEFAULT_BACKEND = "ibm_brisbane"
 DRY_RUN_BACKEND = "StatevectorSimulator"
 
 _TERMINAL_STATUSES = {"DONE", "ERROR", "CANCELLED"}
-
-
-def _backend_name() -> str:
-    return os.environ.get("IBM_BACKEND", DEFAULT_BACKEND)
 
 
 def _sdk_version() -> str:
@@ -66,8 +61,13 @@ def submit(
         token = os.environ.get("IBM_QUANTUM_TOKEN", "")
         instance = os.environ.get("IBM_QUANTUM_INSTANCE", "")
         service = QiskitRuntimeService(channel="ibm_cloud", token=token, instance=instance)
-        backend_label = _backend_name()
-        backend = service.backend(backend_label)
+        explicit = os.environ.get("IBM_BACKEND", "")
+        if explicit:
+            backend = service.backend(explicit)
+        else:
+            backend = service.least_busy(operational=True, simulator=False)
+            print(f"  Selected backend via least_busy: {backend.name}")
+        backend_label = backend.name
         transpiled = transpile(circuits, backend=backend, optimization_level=1)
         sampler = Sampler(backend)
         jobs = [sampler.run([qc], shots=shots) for qc in transpiled]
