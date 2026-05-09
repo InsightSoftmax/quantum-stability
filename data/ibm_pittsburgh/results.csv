@@ -1,0 +1,11 @@
+run_date,platform,backend,input_bits,circuit_length,shots,counts_json,success_probability,job_id,job_start_time,job_end_time,sdk_version,notes
+2026-05-09,ibm_pittsburgh,ibm_pittsburgh,00,1,100,"{""00"": 96, ""01"": 4}",0.96,d7vj7pback5s73bfgeb0,,,0.44.1,
+2026-05-09,ibm_pittsburgh,ibm_pittsburgh,01,2,100,"{""11"": 91, ""00"": 6, ""10"": 2, ""01"": 1}",0.91,d7vj7pjack5s73bfgebg,,,0.44.1,
+2026-05-09,ibm_pittsburgh,ibm_pittsburgh,00,3,100,"{""00"": 97, ""10"": 3}",0.97,d7vj7pnmrars73d8966g,,,0.44.1,
+2026-05-09,ibm_pittsburgh,ibm_pittsburgh,01,4,100,"{""10"": 92, ""01"": 4, ""00"": 4}",0.92,d7vj7pvmrars73d89680,,,0.44.1,
+2026-05-09,ibm_pittsburgh,ibm_pittsburgh,00,5,100,"{""00"": 94, ""01"": 1, ""10"": 4, ""11"": 1}",0.94,d7vj7pvmrars73d8968g,,,0.44.1,
+2026-05-09,ibm_pittsburgh,ibm_pittsburgh,00,6,100,"{""00"": 92, ""11"": 4, ""01"": 3, ""10"": 1}",0.92,d7vj7prack5s73bfgecg,,,0.44.1,
+2026-05-09,ibm_pittsburgh,ibm_pittsburgh,01,2,100,"{""11"": 97, ""01"": 2, ""10"": 1}",0.97,d7vj7q7mrars73d8969g,,,0.44.1,
+2026-05-09,ibm_pittsburgh,ibm_pittsburgh,00,6,100,"{""00"": 99, ""10"": 1}",0.99,d7vj7q5pa59c73b5vsv0,,,0.44.1,
+2026-05-09,ibm_pittsburgh,ibm_pittsburgh,10,4,100,"{""11"": 96, ""00"": 3, ""10"": 1}",0.96,d7vj7qback5s73bfgeeg,,,0.44.1,
+2026-05-09,ibm_pittsburgh,ibm_pittsburgh,10,3,100,"{""01"": 96, ""10"": 1, ""11"": 1, ""00"": 2}",0.96,d7vj7qfmrars73d896b0,,,0.44.1,

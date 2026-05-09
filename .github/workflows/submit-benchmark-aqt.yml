@@ -1,0 +1,53 @@
+name: Submit AQT Benchmark
+
+on:
+  schedule:
+    # Every Tuesday at 10:30 UTC — within the AQT hardware window (Tue/Wed 10:00–17:00 CET)
+    - cron: "30 10 * * 2"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run: local simulation only (no API calls, no cost)"
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  submit:
+    name: Submit AQT circuits
+    runs-on: ubuntu-latest
+    environment: quantum-production
+
+    permissions:
+      contents: write
+      id-token: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Submit jobs
+        env:
+          AQT_API_KEY: ${{ secrets.AQT_API_KEY }}
+          DRY_RUN: ${{ inputs.dry_run || 'false' }}
+          PLATFORM: aqt_qiskit
+        run: uv run python scripts/submit_benchmark.py
+
+      - name: Commit pending job files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add pending/
+          git diff --staged --quiet || git commit -m "chore: submit AQT benchmark $(date -u +%Y-%m-%d)"
+          git pull --rebase --autostash && git push

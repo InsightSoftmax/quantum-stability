@@ -1,0 +1,54 @@
+name: Submit IBM Marrakesh Benchmark
+
+on:
+  schedule:
+    # Every Monday at 12:05 UTC — offset from Pittsburgh to avoid simultaneous pushes
+    - cron: "5 12 * * 1"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run: local simulation only (no API calls, no cost)"
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  submit:
+    name: Submit IBM Marrakesh circuits
+    runs-on: ubuntu-latest
+    environment: quantum-production
+
+    permissions:
+      contents: write
+      id-token: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Submit jobs
+        env:
+          IBM_QUANTUM_TOKEN: ${{ secrets.IBM_QUANTUM_TOKEN }}
+          IBM_QUANTUM_INSTANCE_OPEN: ${{ vars.IBM_QUANTUM_INSTANCE_OPEN }}
+          DRY_RUN: ${{ inputs.dry_run || 'false' }}
+          PLATFORM: ibm_marrakesh
+        run: uv run python scripts/submit_benchmark.py
+
+      - name: Commit pending job files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add pending/
+          git diff --staged --quiet || git commit -m "chore: submit IBM Marrakesh benchmark $(date -u +%Y-%m-%d)"
+          git pull --rebase --autostash && git push
