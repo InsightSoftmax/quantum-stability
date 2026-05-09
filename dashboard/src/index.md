@@ -171,8 +171,7 @@ const summaryRows = sortedSummary.map(p => {
 }).sort((a, b) => {
   const statusOrder = s => s === "active" ? 0 : 1;
   const so = statusOrder(a.status) - statusOrder(b.status);
-  if (so !== 0) return so;
-  return (b.consistency ?? -1) - (a.consistency ?? -1);
+  return so !== 0 ? so : a.name.localeCompare(b.name);
 });
 const summaryHref = new Map(summaryRows.map(r => [r.name, r.href]));
 ```
