@@ -82,25 +82,25 @@ const summaryRows = sortedSummary.map(p => {
   return {
     platform: p.platform,
     name: PLATFORM_DISPLAY[p.platform] ?? p.platform,
+    href: PLATFORM_HREF[p.platform] ?? null,
     status: p.status,
     consistency: consistencyScores[p.platform] != null ? consistencyScores[p.platform] / 100 : null,
     latest_success: latest,
     mean_success: allMean,
     n_runs: p.n_runs,
   };
-});
+}).sort((a, b) => (b.consistency ?? -1) - (a.consistency ?? -1));
+const summaryHref = new Map(summaryRows.map(r => [r.name, r.href]));
 ```
 
 ```js
-const nameToHref = new Map(summaryRows.map(r => [r.name, PLATFORM_HREF[r.platform] ?? null]));
 Inputs.table(summaryRows, {
   select: false,
   columns: ["name", "status", "consistency", "latest_success", "mean_success", "n_runs"],
   header: {name: "Platform", status: "Status", consistency: "Consistency (4-run avg)", latest_success: "Latest success", mean_success: "All-time mean", n_runs: "Runs"},
   width: {name: 210, status: 80, consistency: 160, latest_success: 120, mean_success: 120, n_runs: 60},
-  sort: "consistency", reverse: true,
   format: {
-    name: d => { const href = nameToHref.get(d); return href ? html`<a href="${href}">${d}</a>` : d; },
+    name: d => { const href = summaryHref.get(d); return href ? html`<a href="${href}">${d}</a>` : d; },
     status: d => html`<span class="badge ${d === "active" ? "badge-active" : "badge-historical"}">${d === "active" ? "Active" : "Paused"}</span>`,
     consistency: d => d != null ? `${(d * 100).toFixed(1)}%` : "—",
     latest_success: d => d != null ? `${(d * 100).toFixed(1)}%` : "—",
