@@ -2,6 +2,29 @@ import * as Plot from "npm:@observablehq/plot";
 
 const DOMAIN_FLOOR = 0.7;
 
+const INCIDENT_COLOR = {
+  platform_offline:   "#E53E3E",
+  automation_error:   "#DD6B20",
+  planned_transition: "#718096",
+  queue_timeout:      "#805AD5",
+};
+
+function incidentRules(incidents) {
+  if (!incidents?.length) return [];
+  return [Plot.ruleX(incidents, {
+    x: d => new Date(d.incident_date),
+    stroke: d => INCIDENT_COLOR[d.type] ?? "#718096",
+    strokeWidth: 1.5,
+    strokeDasharray: "4,3",
+    tip: true,
+    title: d => [
+      d.incident_date,
+      d.type.replace(/_/g, " "),
+      d.notes || d.error_message || "",
+    ].filter(Boolean).join("\n"),
+  })];
+}
+
 // 4-run trailing rolling mean of a numeric field across an already-sorted array.
 function addRollingMean(runs, fields, k = 4) {
   return runs.map((d, i) => {
@@ -20,7 +43,7 @@ function addRollingMean(runs, fields, k = 4) {
  * Time series of weekly mean success probability with ±1σ band.
  * Faded line/dots = individual runs; bold line/dots = 4-run rolling average.
  */
-export function successTimeSeries(data, {color = "#363D47", width = 900} = {}) {
+export function successTimeSeries(data, {color = "#363D47", width = 900, incidents = data.incidents} = {}) {
   const allRuns = data.runs.map(d => ({...d, date: new Date(d.run_date)}));
   const maRuns  = addRollingMean(allRuns, ["mean_success"]);
   const yMin    = Math.max(DOMAIN_FLOOR, Math.min(...allRuns.map(d => d.mean_success)) - 0.05);
@@ -60,6 +83,7 @@ export function successTimeSeries(data, {color = "#363D47", width = 900} = {}) {
         fill: color, r: 3.5, tip: true,
         title: d => `${d.run_date}\nThis run: ${(d.mean_success * 100).toFixed(1)}% ± ${(d.std_success * 100).toFixed(1)}%\n4-run avg: ${(d.ma_mean_success * 100).toFixed(1)}%\n${d.n_circuits} circuits`,
       }),
+      ...incidentRules(incidents),
     ],
   });
 }
@@ -68,7 +92,7 @@ export function successTimeSeries(data, {color = "#363D47", width = 900} = {}) {
  * Consistency over time — (1 - within-run std dev), higher is more consistent.
  * Faded line/dots = individual runs; bold line/dots = 4-run rolling average.
  */
-export function volatilityTimeSeries(data, {color = "#363D47", width = 900} = {}) {
+export function volatilityTimeSeries(data, {color = "#363D47", width = 900, incidents = data.incidents} = {}) {
   const allRuns = data.runs.map(d => ({
     ...d,
     date: new Date(d.run_date),
@@ -103,6 +127,7 @@ export function volatilityTimeSeries(data, {color = "#363D47", width = 900} = {}
         fill: color, r: 3.5, tip: true,
         title: d => `${d.run_date}\nThis run: ${(d.consistency * 100).toFixed(1)}%\n4-run avg: ${(d.ma_consistency * 100).toFixed(1)}%`,
       }),
+      ...incidentRules(incidents),
     ],
   });
 }

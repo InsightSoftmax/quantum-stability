@@ -15,15 +15,21 @@ Usage:
 import csv
 import json
 import sys
+from datetime import UTC, datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from scripts.record_incident import classify_error, record_incident
 
 FIELDNAMES = [
     "run_date", "platform", "backend", "input_bits", "circuit_length",
     "shots", "counts_json", "success_probability", "job_id",
     "job_start_time", "job_end_time", "sdk_version", "notes",
 ]
+
+# Pending batches older than this are timed out and recorded as queue_timeout incidents.
+MAX_PENDING_DAYS = 14
 
 
 def append_results(platform: str, results: list[dict]) -> None:
@@ -37,6 +43,18 @@ def append_results(platform: str, results: list[dict]) -> None:
         for row in results:
             writer.writerow({k: row.get(k, "") for k in FIELDNAMES})
     print(f"  Wrote {len(results)} rows to {out_path}")
+
+
+def is_timed_out(pending: dict) -> bool:
+    submitted_at = pending.get("submitted_at")
+    if not submitted_at:
+        return False
+    try:
+        submitted = datetime.fromisoformat(submitted_at.replace("Z", "+00:00"))
+        age_days = (datetime.now(UTC) - submitted).days
+        return age_days >= MAX_PENDING_DAYS
+    except (ValueError, TypeError):
+        return False
 
 
 def main() -> None:
@@ -59,16 +77,41 @@ def main() -> None:
 
         pending = json.loads(pending_path.read_text())
 
+        # Queue timeout: batch has been waiting too long
+        if is_timed_out(pending):
+            msg = f"Pending batch {pending_path.name} exceeded {MAX_PENDING_DAYS}-day timeout"
+            print(f"  TIMEOUT: {msg}")
+            record_incident(
+                platform=pending.get("platform", platform_name),
+                incident_type="queue_timeout",
+                error_message=msg,
+                notes=f"Submitted at {pending.get('submitted_at', 'unknown')}; {len(pending.get('jobs', []))} jobs",
+                incident_date=pending.get("run_date"),
+            )
+            pending_path.unlink()
+            continue
+
         try:
             module = __import__(f"benchmarks.{platform_name}", fromlist=["collect"])
             results = module.collect(pending)
         except RuntimeError as e:
-            # Jobs failed — log and remove the pending file so we don't retry forever
             print(f"  FAILED: {e}")
+            record_incident(
+                platform=pending.get("platform", platform_name),
+                incident_type=classify_error(e),
+                error_message=str(e),
+                incident_date=pending.get("run_date"),
+            )
             pending_path.unlink()
             continue
         except Exception as e:
             print(f"  ERROR: {e}")
+            record_incident(
+                platform=pending.get("platform", platform_name),
+                incident_type="automation_error",
+                error_message=str(e),
+                incident_date=pending.get("run_date"),
+            )
             raise
 
         if results is None:

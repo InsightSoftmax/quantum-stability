@@ -80,6 +80,23 @@ Does the initial qubit state affect results? Ideally it shouldn't — deviations
 successByInput(data, {color: "#363D47"})
 ```
 
+## Incidents
+
+```js
+data.incidents?.length > 0 ? Inputs.table([...data.incidents].reverse(), {
+  select: false,
+  columns: ["incident_date", "type", "notes", "error_message"],
+  header: {incident_date: "Date", type: "Type", notes: "Notes", error_message: "Error"},
+  width: {incident_date: 110, type: 160, notes: 220, error_message: 300},
+  format: {
+    type: d => {
+      const colors = {platform_offline: "#E53E3E", automation_error: "#DD6B20", planned_transition: "#718096", queue_timeout: "#805AD5"};
+      return html`<span style="color:${colors[d] ?? "#718096"};font-weight:600">${d.replace(/_/g, " ")}</span>`;
+    },
+  },
+}) : html`<p style="color: var(--isc-muted); font-style: italic">No incidents recorded.</p>`
+```
+
 ## All runs
 
 ```js
