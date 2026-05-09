@@ -101,25 +101,19 @@ const maRuns = Object.values(byLabel).flatMap(runs => {
 ```
 
 ```js
-{
-  const plot = Plot.plot({
-    width: 900, height: 220, marginLeft: 55,
-    y: {label: "Consistency score", tickFormat: d => `${(d * 100).toFixed(0)}%`},
-    x: {type: "utc", label: null},
-    color: {domain: colorDomain, range: colorRange},
-    marks: [
-      Plot.line(allRuns, {x: "date", y: d => 1 - d.std, stroke: "label", strokeWidth: 1, strokeOpacity: 0.3, curve: "monotone-x"}),
-      Plot.dot(allRuns, {x: "date", y: d => 1 - d.std, fill: "label", r: 2, fillOpacity: 0.3}),
-      Plot.line(maRuns, {x: "date", y: d => 1 - d.maStd, stroke: "label", strokeWidth: 2.5, curve: "monotone-x"}),
-      Plot.dot(maRuns, {x: "date", y: d => 1 - d.maStd, fill: "label", r: 3.5, tip: true,
-        title: d => `${d.label}\n${d.date.toLocaleDateString()}\nThis run: ${((1 - d.std) * 100).toFixed(1)}%\n4-run avg: ${((1 - d.maStd) * 100).toFixed(1)}%`}),
-    ],
-  });
-  const legend = Plot.legend({color: {type: "categorical", domain: colorDomain, range: colorRange}});
-  const div = document.createElement("div");
-  div.append(plot, legend);
-  return div;
-}
+html`<div>${Plot.plot({
+  width: 900, height: 220, marginLeft: 55,
+  y: {label: "Consistency score", tickFormat: d => `${(d * 100).toFixed(0)}%`},
+  x: {type: "utc", label: null},
+  color: {domain: colorDomain, range: colorRange},
+  marks: [
+    Plot.line(allRuns, {x: "date", y: d => 1 - d.std, stroke: "label", strokeWidth: 1, strokeOpacity: 0.3, curve: "monotone-x"}),
+    Plot.dot(allRuns, {x: "date", y: d => 1 - d.std, fill: "label", r: 2, fillOpacity: 0.3}),
+    Plot.line(maRuns, {x: "date", y: d => 1 - d.maStd, stroke: "label", strokeWidth: 2.5, curve: "monotone-x"}),
+    Plot.dot(maRuns, {x: "date", y: d => 1 - d.maStd, fill: "label", r: 3.5, tip: true,
+      title: d => `${d.label}\n${d.date.toLocaleDateString()}\nThis run: ${((1 - d.std) * 100).toFixed(1)}%\n4-run avg: ${((1 - d.maStd) * 100).toFixed(1)}%`}),
+  ],
+})}${Plot.legend({color: {type: "categorical", domain: colorDomain, range: colorRange}})}</div>`
 ```
 
 ## Success probability over time
@@ -127,26 +121,20 @@ const maRuns = Object.values(byLabel).flatMap(runs => {
 Faded line and dots are individual runs; bold line and larger dots are the 4-run rolling average. Both share the same colour per platform.
 
 ```js
-{
-  const plot = Plot.plot({
-    width: 900, height: 280, marginLeft: 55,
-    y: {domain: [Math.floor(Math.min(...allRuns.map(d => d.value)) * 20) / 20, 1.02], label: "Mean success probability", tickFormat: d => `${(d*100).toFixed(0)}%`},
-    x: {type: "utc", label: null},
-    color: {domain: colorDomain, range: colorRange},
-    marks: [
-      Plot.ruleY([1], {stroke: "#e2e8f0"}),
-      Plot.line(allRuns, {x: "date", y: "value", stroke: "label", strokeWidth: 1, strokeOpacity: 0.3, curve: "monotone-x"}),
-      Plot.dot(allRuns, {x: "date", y: "value", fill: "label", r: 2, fillOpacity: 0.3}),
-      Plot.line(maRuns, {x: "date", y: "maValue", stroke: "label", strokeWidth: 2.5, curve: "monotone-x"}),
-      Plot.dot(maRuns, {x: "date", y: "maValue", fill: "label", r: 3.5, tip: true,
-        title: d => `${d.label}\n${d.date.toLocaleDateString()}\nThis run: ${(d.value * 100).toFixed(1)}%\n4-run avg: ${(d.maValue * 100).toFixed(1)}%`}),
-    ],
-  });
-  const legend = Plot.legend({color: {type: "categorical", domain: colorDomain, range: colorRange}});
-  const div = document.createElement("div");
-  div.append(plot, legend);
-  return div;
-}
+html`<div>${Plot.plot({
+  width: 900, height: 280, marginLeft: 55,
+  y: {domain: [Math.floor(Math.min(...allRuns.map(d => d.value)) * 20) / 20, 1.02], label: "Mean success probability", tickFormat: d => `${(d*100).toFixed(0)}%`},
+  x: {type: "utc", label: null},
+  color: {domain: colorDomain, range: colorRange},
+  marks: [
+    Plot.ruleY([1], {stroke: "#e2e8f0"}),
+    Plot.line(allRuns, {x: "date", y: "value", stroke: "label", strokeWidth: 1, strokeOpacity: 0.3, curve: "monotone-x"}),
+    Plot.dot(allRuns, {x: "date", y: "value", fill: "label", r: 2, fillOpacity: 0.3}),
+    Plot.line(maRuns, {x: "date", y: "maValue", stroke: "label", strokeWidth: 2.5, curve: "monotone-x"}),
+    Plot.dot(maRuns, {x: "date", y: "maValue", fill: "label", r: 3.5, tip: true,
+      title: d => `${d.label}\n${d.date.toLocaleDateString()}\nThis run: ${(d.value * 100).toFixed(1)}%\n4-run avg: ${(d.maValue * 100).toFixed(1)}%`}),
+  ],
+})}${Plot.legend({color: {type: "categorical", domain: colorDomain, range: colorRange}})}</div>`
 ```
 
 ## Platform summary
@@ -260,9 +248,9 @@ const sortedCostRows = [...costRows].sort((a, b) => {
 ```js
 Inputs.table(sortedCostRows, {
   select: false,
-  columns: ["platform", "access", "schedule", "status", "cost_per_run", "annual_actual", "annual_52"],
-  header: {platform: "Platform", access: "Access", schedule: "Schedule", status: "Status", cost_per_run: "Per run", annual_actual: "Actual annual", annual_52: "Annual (52×)"},
-  width: {platform: 210, access: 190, schedule: 90, status: 80, cost_per_run: 80, annual_actual: 110, annual_52: 100},
+  columns: ["platform", "status", "access", "schedule", "cost_per_run", "annual_actual", "annual_52"],
+  header: {platform: "Platform", status: "Status", access: "Access", schedule: "Schedule", cost_per_run: "Per run", annual_actual: "Actual annual", annual_52: "Annual (52×)"},
+  width: {platform: 210, status: 80, access: 190, schedule: 90, cost_per_run: 80, annual_actual: 110, annual_52: 100},
   format: {
     platform: d => html`<span title="${d}">${d}</span>`,
     access: d => html`<span title="${d}">${d}</span>`,
