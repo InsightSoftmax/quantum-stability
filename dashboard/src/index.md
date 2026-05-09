@@ -37,12 +37,14 @@ ${sortedSummary.map(p => html`
       ${p.platform === "rigetti_cepheus" ? html`<a href="/rigetti-cepheus">Rigetti ${p.backend}</a>` :
         p.platform === "rigetti_ankaa"   ? html`<a href="/rigetti-ankaa">Rigetti ${p.backend}</a>` :
         p.platform === "aqt"             ? html`<a href="/aqt">AQT ${p.backend}</a>` :
-        p.platform === "aqt_braket"      ? html`<a href="/aqt-braket">AQT ${p.backend}</a>` :
-        p.platform === "iqm_braket"      ? html`<a href="/iqm">IQM ${p.backend}</a>` :
-        p.platform === "ibm"             ? html`<a href="/ibm">IBM ${p.backend}</a>` :
-        p.platform === "ionq_forte_direct"  ? html`<a href="/ionq-forte-direct">IonQ ${p.backend}</a>` :
-        p.platform === "ionq_forte_braket"  ? html`<a href="/ionq-forte-braket">IonQ ${p.backend}</a>` :
-                                              html`<a href="/ionq">IonQ ${p.backend}</a>`}
+        p.platform === "aqt_braket"        ? html`<a href="/aqt-braket">AQT ${p.backend}</a>` :
+        p.platform === "iqm_braket"        ? html`<a href="/iqm">IQM ${p.backend}</a>` :
+        p.platform === "ibm_brisbane"      ? html`<a href="/ibm-brisbane">IBM ${p.backend}</a>` :
+        p.platform === "ibm_pittsburgh"    ? html`<a href="/ibm-pittsburgh">IBM ${p.backend}</a>` :
+        p.platform === "ibm_marrakesh"     ? html`<a href="/ibm-marrakesh">IBM ${p.backend}</a>` :
+        p.platform === "ionq_forte_direct" ? html`<a href="/ionq-forte-direct">IonQ ${p.backend}</a>` :
+        p.platform === "ionq_forte_braket" ? html`<a href="/ionq-forte-braket">IonQ ${p.backend}</a>` :
+                                             html`<a href="/ionq">IonQ ${p.backend}</a>`}
       <span class="badge ${statusClass[p.status]}">${statusLabel[p.status]}</span>
     </div>
     ${consistencyScores[p.platform] != null ? html`
@@ -62,13 +64,15 @@ Within-run consistency score (1 - std dev) per run — higher is more consistent
 
 ```js
 const PLATFORM_LABEL = {
-  aqt: "AQT IBEX", aqt_braket: "AQT IBEX (Braket)", ibm: "IBM Brisbane",
+  aqt: "AQT IBEX", aqt_braket: "AQT IBEX (Braket)",
+  ibm_brisbane: "IBM Brisbane", ibm_pittsburgh: "IBM Pittsburgh", ibm_marrakesh: "IBM Marrakesh",
   ionq: "IonQ Aria-1", ionq_forte_direct: "IonQ Forte-1 (direct)", ionq_forte_braket: "IonQ Forte-1 (Braket)",
   iqm_braket: "IQM Garnet",
   rigetti_ankaa: "Rigetti Ankaa-3", rigetti_cepheus: "Rigetti Cepheus-1-108Q",
 };
 const PLATFORM_COLOR = {
-  aqt: "#363D47", aqt_braket: "#5B7FA3", ibm: "#1192E8",
+  aqt: "#363D47", aqt_braket: "#5B7FA3",
+  ibm_brisbane: "#1192E8", ibm_pittsburgh: "#0043CE", ibm_marrakesh: "#4589FF",
   ionq: "#74737B", ionq_forte_direct: "#99979D", ionq_forte_braket: "#6B8CAE",
   iqm_braket: "#2E8B74",
   rigetti_ankaa: "#A07800", rigetti_cepheus: "#CC8A00",
@@ -167,19 +171,22 @@ Plot.plot({
 
 ```js
 const PLATFORM_NAME = {
-  aqt: "AQT IBEX (direct)", aqt_braket: "AQT IBEX (Braket)", ibm: "IBM Brisbane",
+  aqt: "AQT IBEX (direct)", aqt_braket: "AQT IBEX (Braket)",
+  ibm_brisbane: "IBM Brisbane", ibm_pittsburgh: "IBM Pittsburgh", ibm_marrakesh: "IBM Marrakesh",
   ionq: "IonQ Aria-1", ionq_forte_direct: "IonQ Forte-1 (direct)", ionq_forte_braket: "IonQ Forte-1 (Braket)",
   iqm_braket: "IQM Garnet",
   rigetti_ankaa: "Rigetti Ankaa-3", rigetti_cepheus: "Rigetti Cepheus-1-108Q",
 };
 const ACCESS = {
-  aqt: "qiskit-aqt-provider", aqt_braket: "AWS Braket", ibm: "Qiskit Runtime (historical)",
+  aqt: "qiskit-aqt-provider", aqt_braket: "AWS Braket",
+  ibm_brisbane: "Qiskit Runtime (historical)", ibm_pittsburgh: "Qiskit Runtime", ibm_marrakesh: "Qiskit Runtime",
   ionq: "AWS Braket (historical)", ionq_forte_direct: "IonQ REST API (historical)",
   ionq_forte_braket: "AWS Braket", iqm_braket: "AWS Braket",
   rigetti_ankaa: "AWS Braket (historical)", rigetti_cepheus: "AWS Braket",
 };
 const SCHEDULE = {
-  aqt: "Weekly", aqt_braket: "Weekly", ibm: "—",
+  aqt: "Weekly", aqt_braket: "Weekly",
+  ibm_brisbane: "—", ibm_pittsburgh: "Weekly", ibm_marrakesh: "Weekly",
   ionq: "Weekly", ionq_forte_direct: "Monthly", ionq_forte_braket: "Monthly",
   iqm_braket: "Weekly",
   rigetti_ankaa: "Weekly", rigetti_cepheus: "Weekly",

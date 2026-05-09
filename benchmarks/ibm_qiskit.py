@@ -23,7 +23,7 @@ from datetime import UTC, date, datetime
 
 from benchmarks.circuits import REFERENCE_TABLE, build_circuit_qiskit, sample_circuits
 
-PLATFORM = "ibm"
+PLATFORM = "ibm_brisbane"
 DRY_RUN_BACKEND = "StatevectorSimulator"
 
 _TERMINAL_STATUSES = {"DONE", "ERROR", "CANCELLED"}

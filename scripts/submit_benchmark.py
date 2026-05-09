@@ -21,13 +21,12 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from scripts.record_incident import classify_error, record_incident
 
-# Platforms to run. Currently Rigetti and AQT are run manually by Arash —
-# uncomment here once the GitHub Actions workflow is wired up end-to-end.
 ENABLED_PLATFORMS = [
-    "rigetti_braket",  # active: Rigetti Ankaa-3 via AWS Braket (us-west-1)
-    "aqt_qiskit",      # active: AQT via qiskit-aqt-provider; requires AQT_API_KEY secret
-    "ibm_qiskit",      # active: IBM Brisbane via Qiskit Runtime; requires IBM_QUANTUM_TOKEN secret
-    # "ionq_braket",   # paused: budget
+    "rigetti_braket",   # active: Rigetti Cepheus-1-108Q via AWS Braket (us-west-1)
+    "aqt_qiskit",       # active: AQT IBEX via qiskit-aqt-provider; requires AQT_API_KEY
+    "ibm_pittsburgh",   # active: IBM Pittsburgh (Heron r3) via Qiskit Runtime; requires IBM_QUANTUM_TOKEN
+    "ibm_marrakesh",    # active: IBM Marrakesh (Heron r2) via Qiskit Runtime; requires IBM_QUANTUM_TOKEN
+    # "ionq_braket",    # paused: budget
 ]
 
 

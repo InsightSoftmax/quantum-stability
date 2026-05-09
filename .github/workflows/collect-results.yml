@@ -59,7 +59,8 @@ jobs:
           BRAKET_RESULTS_BUCKET_EU: ${{ vars.BRAKET_RESULTS_BUCKET_EU }}
           AQT_API_KEY: ${{ secrets.AQT_API_KEY }}
           IBM_QUANTUM_TOKEN: ${{ secrets.IBM_QUANTUM_TOKEN }}
-          IBM_QUANTUM_INSTANCE: ${{ vars.IBM_QUANTUM_INSTANCE }}
+          IBM_QUANTUM_INSTANCE_PAYG: ${{ vars.IBM_QUANTUM_INSTANCE_PAYG }}
+          IBM_QUANTUM_INSTANCE_OPEN: ${{ vars.IBM_QUANTUM_INSTANCE_OPEN }}
         run: uv run python scripts/collect_results.py
 
       - name: Commit results

@@ -8,6 +8,8 @@ export default {
       pages: [
         {name: "AQT IBEX", path: "/aqt"},
         {name: "AQT IBEX (Braket)", path: "/aqt-braket"},
+        {name: "IBM Marrakesh", path: "/ibm-marrakesh"},
+        {name: "IBM Pittsburgh", path: "/ibm-pittsburgh"},
         {name: "IQM Garnet", path: "/iqm"},
         {name: "IonQ Forte-1 (Braket)", path: "/ionq-forte-braket"},
         {name: "Rigetti Cepheus-1-108Q", path: "/rigetti-cepheus"},
@@ -16,7 +18,7 @@ export default {
     {
       name: "Paused Platforms",
       pages: [
-        {name: "IBM Brisbane", path: "/ibm"},
+        {name: "IBM Brisbane", path: "/ibm-brisbane"},
         {name: "IonQ Aria-1", path: "/ionq"},
         {name: "IonQ Forte-1 (direct)", path: "/ionq-forte-direct"},
         {name: "Rigetti Ankaa-3", path: "/rigetti-ankaa"},

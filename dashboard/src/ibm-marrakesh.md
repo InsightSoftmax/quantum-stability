@@ -1,28 +1,28 @@
 ---
-title: IBM Brisbane
+title: IBM Marrakesh
 ---
 
 ```js
 import {successTimeSeries, volatilityTimeSeries, boxByLength, successByLength, successByInput, successSurface3D} from "./components/platformCharts.js";
-const data = await FileAttachment("data/ibm.json").json();
+const data = await FileAttachment("data/ibm-marrakesh.json").json();
 ```
 
-# IBM Brisbane
+# IBM Marrakesh
 
-Superconducting QPU (Eagle r3, 127 qubits) accessed via Qiskit Runtime. Historical data from February–June 2025, collected by Sami. Future runs are automated monthly.
+IBM superconducting QPU (Heron r2, 156 qubits) accessed via Qiskit Runtime, open plan (us-east). Weekly runs on Mondays.
 
 <div style="display: flex; gap: 2rem; margin: 1rem 0;">
   <div class="platform-card" style="flex: 1">
-    <div class="metric">${(data.runs.at(-1)?.mean_success * 100).toFixed(1)}%</div>
+    <div class="metric">${data.runs.length > 0 ? (data.runs.at(-1)?.mean_success * 100).toFixed(1) + "%" : "—"}</div>
     <div class="metric-label">Latest run success rate</div>
   </div>
   <div class="platform-card" style="flex: 1">
-    <div class="metric">${(data.runs.reduce((s, d) => s + d.mean_success, 0) / data.runs.length * 100).toFixed(1)}%</div>
+    <div class="metric">${data.runs.length > 0 ? (data.runs.reduce((s, d) => s + d.mean_success, 0) / data.runs.length * 100).toFixed(1) + "%" : "—"}</div>
     <div class="metric-label">All-time mean</div>
   </div>
   <div class="platform-card" style="flex: 1">
     <div class="metric">${data.runs.length}</div>
-    <div class="metric-label">Runs (2025)</div>
+    <div class="metric-label">Runs</div>
   </div>
   <div class="platform-card" style="flex: 1">
     <div class="metric">${data.circuits.length}</div>
@@ -30,12 +30,14 @@ Superconducting QPU (Eagle r3, 127 qubits) accessed via Qiskit Runtime. Historic
   </div>
 </div>
 
+${data.runs.length === 0 ? html`<div style="color: var(--isc-muted); font-style: italic; margin: 2rem 0;">No data yet — first automated run scheduled for next Monday.</div>` : ""}
+
 ## Consistency over time
 
 Within-run consistency score (1 - std dev) — the primary stability metric. Higher is more consistent. Faded line and dots are individual runs; bold line and larger dots are the 4-run rolling average.
 
 ```js
-volatilityTimeSeries(data, {color: "#1192E8"})
+volatilityTimeSeries(data, {color: "#4589FF"})
 ```
 
 ## Success probability over time
@@ -43,7 +45,7 @@ volatilityTimeSeries(data, {color: "#1192E8"})
 Success probability for a given circuit is the fraction of shots that produced the correct output — where "correct" is the deterministic, noise-free answer computed by classical simulation. Each point is the mean across the circuits sampled that run. The bold line is the 4-run rolling average; faded line and dots are individual runs. The shaded band shows ±1 standard deviation within the run.
 
 ```js
-successTimeSeries(data, {color: "#1192E8"})
+successTimeSeries(data, {color: "#4589FF"})
 ```
 
 ## Performance breakdown
@@ -55,13 +57,13 @@ How success probability varies across circuit depth and input state, aggregated 
 <p style="margin-bottom:0">Each point is one (depth, input state) combination. Point size reflects how many circuits were run with that combination. Drag to rotate.</p>
 
 ```js
-successSurface3D(data, {color: "#1192E8"})
+successSurface3D(data, {color: "#4589FF"})
 ```
 
 ### Distribution by circuit depth
 
 ```js
-boxByLength(data, {color: "#1192E8"})
+boxByLength(data, {color: "#4589FF"})
 ```
 
 ### Mean success by circuit depth
@@ -69,7 +71,7 @@ boxByLength(data, {color: "#1192E8"})
 Mean success probability for each depth, averaged across all runs. A declining trend confirms that noise accumulates as circuit depth increases.
 
 ```js
-successByLength(data, {color: "#1192E8"})
+successByLength(data, {color: "#4589FF"})
 ```
 
 ### Mean success by input state
@@ -77,7 +79,7 @@ successByLength(data, {color: "#1192E8"})
 Does the initial qubit state affect results? Ideally it shouldn't — deviations suggest state-preparation or readout asymmetry.
 
 ```js
-successByInput(data, {color: "#1192E8"})
+successByInput(data, {color: "#4589FF"})
 ```
 
 ## Incidents
@@ -103,12 +105,7 @@ data.incidents?.length > 0 ? Inputs.table([...data.incidents].reverse(), {
 Inputs.table(data.runs.slice().reverse(), {
   select: false,
   columns: ["run_date", "mean_success", "std_success", "n_circuits"],
-  header: {
-    run_date: "Date",
-    mean_success: "Mean success",
-    std_success: "Std dev",
-    n_circuits: "Circuits",
-  },
+  header: {run_date: "Date", mean_success: "Mean success", std_success: "Std dev", n_circuits: "Circuits"},
   format: {
     mean_success: d => `${(d * 100).toFixed(1)}%`,
     std_success: d => `±${(d * 100).toFixed(1)}%`,

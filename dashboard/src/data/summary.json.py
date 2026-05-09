@@ -10,8 +10,13 @@ import pandas as pd
 repo_root = Path(__file__).parents[3]
 
 PLATFORMS = {
-    "aqt":        {"backend": "IBEX",     "status": "active",     "cost_per_run_usd": 25.07},
-    "ibm":        {"backend": "Brisbane", "status": "active",     "cost_per_run_usd": None},
+    "aqt":             {"backend": "IBEX",          "status": "active",     "cost_per_run_usd": 25.07},
+    "ibm_brisbane":    {"backend": "Brisbane",      "status": "historical", "cost_per_run_usd": None,
+                        "csv_key": "ibm_brisbane"},
+    "ibm_pittsburgh":  {"backend": "Pittsburgh",    "status": "active",     "cost_per_run_usd": None,
+                        "csv_key": "ibm_pittsburgh"},
+    "ibm_marrakesh":   {"backend": "Marrakesh",     "status": "active",     "cost_per_run_usd": None,
+                        "csv_key": "ibm_marrakesh"},
     "ionq":       {"backend": "Aria-1",  "status": "historical", "cost_per_run_usd": 33.00,
                    "csv_key": "ionq", "backend_filter": "Aria"},
     "ionq_forte_direct": {"backend": "Forte-1 (direct)", "status": "historical", "cost_per_run_usd": 259.00,
