@@ -166,28 +166,28 @@ code, pre, .mono {
   background: var(--isc-gray-40);
 }
 
-/* Scrollbars on table containers */
-.observablehq-table {
+/* Scrollbars — thin and muted on all scrollable elements */
+* {
   scrollbar-width: thin;
-  scrollbar-color: var(--isc-blue-40) transparent;
+  scrollbar-color: var(--isc-gray-80) transparent;
 }
 
-.observablehq-table::-webkit-scrollbar {
+*::-webkit-scrollbar {
   height: 5px;
   width: 5px;
 }
 
-.observablehq-table::-webkit-scrollbar-track {
+*::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.observablehq-table::-webkit-scrollbar-thumb {
-  background: var(--isc-blue-40);
+*::-webkit-scrollbar-thumb {
+  background: var(--isc-gray-80);
   border-radius: 999px;
 }
 
-.observablehq-table::-webkit-scrollbar-thumb:hover {
-  background: var(--isc-blue-60);
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--isc-blue-40);
 }
 
 /* ==========================================================================
