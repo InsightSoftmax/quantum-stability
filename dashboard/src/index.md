@@ -113,7 +113,7 @@ html`<div>${Plot.plot({
     Plot.dot(maRuns, {x: "date", y: d => 1 - d.maStd, fill: "label", r: 3.5, tip: true,
       title: d => `${d.label}\n${d.date.toLocaleDateString()}\nThis run: ${((1 - d.std) * 100).toFixed(1)}%\n4-run avg: ${((1 - d.maStd) * 100).toFixed(1)}%`}),
   ],
-})}<div style="margin-top:6px">${Plot.legend({color: {type: "categorical", domain: colorDomain, range: colorRange}})}</div></div>`
+})}<div style="margin-top:6px">${Plot.legend({className: "isc-legend", color: {type: "categorical", domain: colorDomain, range: colorRange}})}</div></div>`
 ```
 
 ## Success probability over time
@@ -134,7 +134,7 @@ html`<div>${Plot.plot({
     Plot.dot(maRuns, {x: "date", y: "maValue", fill: "label", r: 3.5, tip: true,
       title: d => `${d.label}\n${d.date.toLocaleDateString()}\nThis run: ${(d.value * 100).toFixed(1)}%\n4-run avg: ${(d.maValue * 100).toFixed(1)}%`}),
   ],
-})}<div style="margin-top:6px">${Plot.legend({color: {type: "categorical", domain: colorDomain, range: colorRange}})}</div></div>`
+})}<div style="margin-top:6px">${Plot.legend({className: "isc-legend", color: {type: "categorical", domain: colorDomain, range: colorRange}})}</div></div>`
 ```
 
 ## Platform summary
