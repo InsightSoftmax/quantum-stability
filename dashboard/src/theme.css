@@ -159,11 +159,35 @@ code, pre, .mono {
 .badge-historical { background: var(--isc-blue-20);   color: var(--isc-dark-blue); }
 
 /* ==========================================================================
-   Data table — row hover highlight, no selection chrome
+   Data table — row hover highlight, no selection chrome, styled scrollbars
    ========================================================================== */
 
 .observablehq tbody tr:hover td {
   background: var(--isc-gray-40);
+}
+
+/* Scrollbars on table containers */
+.observablehq-table {
+  scrollbar-width: thin;
+  scrollbar-color: var(--isc-blue-40) transparent;
+}
+
+.observablehq-table::-webkit-scrollbar {
+  height: 5px;
+  width: 5px;
+}
+
+.observablehq-table::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.observablehq-table::-webkit-scrollbar-thumb {
+  background: var(--isc-blue-40);
+  border-radius: 999px;
+}
+
+.observablehq-table::-webkit-scrollbar-thumb:hover {
+  background: var(--isc-blue-60);
 }
 
 /* ==========================================================================
