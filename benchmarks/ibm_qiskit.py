@@ -67,7 +67,11 @@ def submit(
             backend = service.least_busy(operational=True, simulator=False)
             print(f"  Selected backend via least_busy: {backend.name}")
         backend_label = backend.name
-        pm = generate_preset_pass_manager(backend=backend, optimization_level=1)
+        # translation_method="translator" bypasses the ibm_dynamic_circuits
+        # plugin which is advertised by IBM backends but not loadable in this env.
+        pm = generate_preset_pass_manager(
+            backend=backend, optimization_level=1, translation_method="translator"
+        )
         transpiled = pm.run(circuits)
         sampler = Sampler(backend)
         jobs = [sampler.run([qc], shots=shots) for qc in transpiled]
