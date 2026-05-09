@@ -159,11 +159,35 @@ code, pre, .mono {
 .badge-historical { background: var(--isc-blue-20);   color: var(--isc-dark-blue); }
 
 /* ==========================================================================
-   Data table — row hover highlight, no selection chrome
+   Data table — row hover highlight, no selection chrome, styled scrollbars
    ========================================================================== */
 
 .observablehq tbody tr:hover td {
   background: var(--isc-gray-40);
+}
+
+/* Scrollbars — thin and muted on all scrollable elements */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--isc-gray-80) transparent;
+}
+
+*::-webkit-scrollbar {
+  height: 5px;
+  width: 5px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--isc-gray-80);
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--isc-blue-40);
 }
 
 /* ==========================================================================
@@ -232,6 +256,14 @@ code, pre, .mono {
 
 .contact-submit:hover {
   background: var(--isc-gold-80);
+}
+
+/* ==========================================================================
+   Plot legend — add row gap when swatches wrap
+   ========================================================================== */
+
+.isc-legend-swatches-wrap {
+  row-gap: 6px;
 }
 
 /* ==========================================================================
