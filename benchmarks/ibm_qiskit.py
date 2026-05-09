@@ -40,8 +40,6 @@ def submit(
     n_circuits: int = 10, shots: int = 100, dry_run: bool = False, use_simulator: bool = False
 ) -> dict:
     """Submit circuits and return a pending dict."""
-    from qiskit import transpile
-
     sampled_keys = sample_circuits(n_circuits)
     circuits = []
     for input_bits, length in sampled_keys:
@@ -55,6 +53,7 @@ def submit(
         backend_label = DRY_RUN_BACKEND
         jobs = _run_local(circuits, shots)
     else:
+        from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
         from qiskit_ibm_runtime import QiskitRuntimeService
         from qiskit_ibm_runtime import SamplerV2 as Sampler
 
@@ -68,7 +67,8 @@ def submit(
             backend = service.least_busy(operational=True, simulator=False)
             print(f"  Selected backend via least_busy: {backend.name}")
         backend_label = backend.name
-        transpiled = transpile(circuits, backend=backend, optimization_level=1)
+        pm = generate_preset_pass_manager(backend=backend, optimization_level=1)
+        transpiled = pm.run(circuits)
         sampler = Sampler(backend)
         jobs = [sampler.run([qc], shots=shots) for qc in transpiled]
 
