@@ -58,6 +58,57 @@ ${sortedSummary.map(p => html`
 `)}
 </div>
 
+## Platform summary
+
+```js
+const PLATFORM_HREF = {
+  rigetti_cepheus: "/rigetti-cepheus", rigetti_ankaa: "/rigetti-ankaa",
+  aqt: "/aqt", aqt_braket: "/aqt-braket",
+  iqm_braket: "/iqm",
+  ibm_brisbane: "/ibm-brisbane", ibm_pittsburgh: "/ibm-pittsburgh", ibm_marrakesh: "/ibm-marrakesh",
+  ionq_forte_direct: "/ionq-forte-direct", ionq_forte_braket: "/ionq-forte-braket", ionq: "/ionq",
+};
+const PLATFORM_DISPLAY = {
+  aqt: "AQT IBEX (direct)", aqt_braket: "AQT IBEX (Braket)",
+  ibm_brisbane: "IBM Brisbane", ibm_pittsburgh: "IBM Pittsburgh", ibm_marrakesh: "IBM Marrakesh",
+  ionq: "IonQ Aria-1", ionq_forte_direct: "IonQ Forte-1 (direct)", ionq_forte_braket: "IonQ Forte-1 (Braket)",
+  iqm_braket: "IQM Garnet",
+  rigetti_ankaa: "Rigetti Ankaa-3", rigetti_cepheus: "Rigetti Cepheus-1-108Q",
+};
+const summaryRows = sortedSummary.map(p => {
+  const vals = p.sparkline.map(d => d.value);
+  const allMean = vals.length ? vals.reduce((s, v) => s + v, 0) / vals.length : null;
+  const latest = p.sparkline.length ? p.sparkline.at(-1).value : null;
+  return {
+    platform: p.platform,
+    name: PLATFORM_DISPLAY[p.platform] ?? p.platform,
+    status: p.status,
+    consistency: consistencyScores[p.platform] != null ? consistencyScores[p.platform] / 100 : null,
+    latest_success: latest,
+    mean_success: allMean,
+    n_runs: p.n_runs,
+  };
+});
+```
+
+```js
+const nameToHref = new Map(summaryRows.map(r => [r.name, PLATFORM_HREF[r.platform] ?? null]));
+Inputs.table(summaryRows, {
+  select: false,
+  columns: ["name", "status", "consistency", "latest_success", "mean_success", "n_runs"],
+  header: {name: "Platform", status: "Status", consistency: "Consistency (4-run avg)", latest_success: "Latest success", mean_success: "All-time mean", n_runs: "Runs"},
+  width: {name: 210, status: 80, consistency: 160, latest_success: 120, mean_success: 120, n_runs: 60},
+  sort: "consistency", reverse: true,
+  format: {
+    name: d => { const href = nameToHref.get(d); return href ? html`<a href="${href}">${d}</a>` : d; },
+    status: d => html`<span class="badge ${d === "active" ? "badge-active" : "badge-historical"}">${d === "active" ? "Active" : "Paused"}</span>`,
+    consistency: d => d != null ? `${(d * 100).toFixed(1)}%` : "—",
+    latest_success: d => d != null ? `${(d * 100).toFixed(1)}%` : "—",
+    mean_success: d => d != null ? `${(d * 100).toFixed(1)}%` : "—",
+  },
+})
+```
+
 ## Consistency over time
 
 Within-run consistency score (1 - std dev) per run — higher is more consistent. Faded line and dots are individual runs; bold line and larger dots are the 4-run rolling average. Both share the same colour per platform.

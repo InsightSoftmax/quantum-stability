@@ -41,6 +41,7 @@ by_length = (
     .reset_index()
     .rename(columns={"circuit_length": "length"})
 ).round(4)
+by_length["std_success"] = by_length["std_success"].fillna(0)
 
 by_input = (
     df.groupby("input_bits")["success_probability"]
