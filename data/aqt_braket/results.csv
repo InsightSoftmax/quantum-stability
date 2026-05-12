@@ -1,1 +1,11 @@
 run_date,platform,backend,input_bits,circuit_length,shots,counts_json,success_probability,job_id,job_start_time,job_end_time,sdk_version,notes
+2026-05-12,aqt_braket,IBEX Q1,01,1,100,"{""01"": 99, ""00"": 1}",0.99,arn:aws:braket:eu-north-1:835581428919:quantum-task/aded78f5-5545-47ae-a1df-38285b63dbb7,2026-05-12T11:39:17.714Z,2026-05-12T11:39:47.511Z,1.114.0,
+2026-05-12,aqt_braket,IBEX Q1,01,2,100,"{""11"": 98, ""10"": 2}",0.98,arn:aws:braket:eu-north-1:835581428919:quantum-task/7ca1c660-4d4d-42e4-8a91-dff5362e98ba,2026-05-12T11:39:18.022Z,2026-05-12T11:39:53.517Z,1.114.0,
+2026-05-12,aqt_braket,IBEX Q1,00,3,100,"{""00"": 100}",1.0,arn:aws:braket:eu-north-1:835581428919:quantum-task/6ebd6c3e-5c15-4b8e-92c8-835592b204ea,2026-05-12T11:39:18.302Z,2026-05-12T11:40:00.662Z,1.114.0,
+2026-05-12,aqt_braket,IBEX Q1,01,4,100,"{""10"": 100}",1.0,arn:aws:braket:eu-north-1:835581428919:quantum-task/818bcf95-5de4-4133-a7ed-2842b6bb822a,2026-05-12T11:39:18.585Z,2026-05-12T11:40:06.533Z,1.114.0,
+2026-05-12,aqt_braket,IBEX Q1,11,5,100,"{""01"": 97, ""00"": 2, ""10"": 1}",0.97,arn:aws:braket:eu-north-1:835581428919:quantum-task/af22edf6-a093-4a07-a877-0d27e237acc6,2026-05-12T11:39:18.866Z,2026-05-12T11:40:49.540Z,1.114.0,
+2026-05-12,aqt_braket,IBEX Q1,10,6,100,"{""10"": 99, ""00"": 1}",0.99,arn:aws:braket:eu-north-1:835581428919:quantum-task/f34c4862-6826-4178-8e5f-4c07e20500ec,2026-05-12T11:39:19.164Z,2026-05-12T11:40:25.541Z,1.114.0,
+2026-05-12,aqt_braket,IBEX Q1,10,3,100,"{""01"": 100}",1.0,arn:aws:braket:eu-north-1:835581428919:quantum-task/83a1c233-37f5-45ee-b4d7-65a5b0f3522f,2026-05-12T11:39:19.442Z,2026-05-12T11:40:13.528Z,1.114.0,
+2026-05-12,aqt_braket,IBEX Q1,01,3,100,"{""10"": 97, ""00"": 3}",0.97,arn:aws:braket:eu-north-1:835581428919:quantum-task/57d767be-3fc4-492d-8c68-a78c44383008,2026-05-12T11:39:19.727Z,2026-05-12T11:41:09.555Z,1.114.0,
+2026-05-12,aqt_braket,IBEX Q1,11,2,100,"{""10"": 99, ""00"": 1}",0.99,arn:aws:braket:eu-north-1:835581428919:quantum-task/464c0624-a7a9-4698-a31e-4469995ab921,2026-05-12T11:39:20.044Z,2026-05-12T11:41:16.547Z,1.114.0,
+2026-05-12,aqt_braket,IBEX Q1,10,1,100,"{""11"": 100}",1.0,arn:aws:braket:eu-north-1:835581428919:quantum-task/47ba0648-ba2d-4f83-9189-07efabbc4eaf,2026-05-12T11:39:20.326Z,2026-05-12T11:40:57.549Z,1.114.0,
