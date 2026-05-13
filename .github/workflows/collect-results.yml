@@ -19,6 +19,7 @@ jobs:
     permissions:
       contents: write   # to commit results and remove pending files
       id-token: write   # for OIDC
+      actions: write    # to trigger deploy-dashboard workflow
 
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -64,10 +65,22 @@ jobs:
         run: uv run python scripts/collect_results.py
 
       - name: Commit results
+        id: commit
         if: steps.check.outputs.pending_count != '0'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/ pending/
-          git diff --staged --quiet || git commit -m "chore: collect benchmark results $(date -u +%Y-%m-%d)"
-          git pull --rebase --autostash && git push
+          if git diff --staged --quiet; then
+            echo "data_committed=false" >> "$GITHUB_OUTPUT"
+          else
+            git commit -m "chore: collect benchmark results $(date -u +%Y-%m-%d)"
+            git pull --rebase --autostash && git push
+            echo "data_committed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Trigger dashboard deploy
+        if: steps.commit.outputs.data_committed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run deploy-dashboard.yml
