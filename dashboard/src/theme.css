@@ -262,7 +262,7 @@ code, pre, .mono {
    Inline prose links — gold underline makes them visible without hover
    ========================================================================== */
 
-p a {
+p a[href] {
   color: var(--isc-dark-blue);
   text-decoration: underline;
   text-decoration-color: var(--isc-gold);
@@ -270,7 +270,7 @@ p a {
   text-underline-offset: 2px;
 }
 
-p a:hover {
+p a[href]:hover {
   color: var(--isc-gold);
 }
 
