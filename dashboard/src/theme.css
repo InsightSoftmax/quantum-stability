@@ -259,6 +259,22 @@ code, pre, .mono {
 }
 
 /* ==========================================================================
+   Inline prose links — gold underline makes them visible without hover
+   ========================================================================== */
+
+p a {
+  color: var(--isc-dark-blue);
+  text-decoration: underline;
+  text-decoration-color: var(--isc-gold);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 2px;
+}
+
+p a:hover {
+  color: var(--isc-gold);
+}
+
+/* ==========================================================================
    Plot legend — add row gap when swatches wrap
    ========================================================================== */
 
