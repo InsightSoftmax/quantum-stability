@@ -93,6 +93,7 @@ Higher is more consistent. The 4-run rolling average smooths week-to-week fluctu
 - **Success over time**: each weekly run produces one data point — the mean success probability across the 10 sampled circuits, with ±1σ band
 - **Consistency over time**: within-run standard deviation per week — a downward trend indicates growing variability
 - **Distribution by circuit depth**: box plots (median, IQR, outliers) show how fidelity degrades with circuit complexity
+- **Success probability by circuit depth and input state**: a 3D scatter aggregating all runs — each point is one (depth, input state) combination, dot size reflects how many circuits have been sampled at that combination. Lets you see whether certain input states perform worse at specific depths, which would point to a structured noise source rather than uniform degradation.
 - **Mean success by circuit depth**: average success rate at each depth level
 - **Mean success by input state**: ideally results should not depend on the input — deviations suggest state-preparation or readout asymmetry
 
