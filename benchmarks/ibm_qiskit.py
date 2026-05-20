@@ -194,6 +194,15 @@ def collect(pending: dict) -> list[dict] | None:
         correct = REFERENCE_TABLE[(job_meta["input_bits"], job_meta["circuit_length"])]
         success_prob = counts.get(correct, 0) / pending["shots"]
 
+        try:
+            metrics = job.metrics()
+            timestamps = metrics.get("timestamps", {})
+            job_start_time = timestamps.get("running")
+            job_end_time = timestamps.get("finished")
+        except Exception:
+            job_start_time = None
+            job_end_time = None
+
         results.append({
             "run_date": pending["run_date"],
             "platform": pending["platform"],
@@ -204,8 +213,8 @@ def collect(pending: dict) -> list[dict] | None:
             "counts_json": json.dumps(counts),
             "success_probability": round(success_prob, 4),
             "job_id": job_meta["job_id"],
-            "job_start_time": None,
-            "job_end_time": None,
+            "job_start_time": job_start_time,
+            "job_end_time": job_end_time,
             "sdk_version": pending["sdk_version"],
             "notes": _notes(pending),
         })
