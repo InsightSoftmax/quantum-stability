@@ -186,7 +186,7 @@ const maQpuRuns = Object.values(qpuByLabel).flatMap(runs => {
 ```js
 html`<div>${Plot.plot({
   width: 900, height: 220, marginLeft: 55,
-  y: {label: "Minutes", tickFormat: d => d >= 1 ? `${d.toFixed(1)}m` : `${(d * 60).toFixed(0)}s`},
+  y: {label: "Minutes", type: "log", tickFormat: d => d >= 1 ? `${d.toFixed(1)}m` : `${(d * 60).toFixed(0)}s`},
   x: {type: "utc", label: null, domain: [CHART_START, new Date()]},
   color: {domain: timingColorDomain, range: timingColorRange},
   marks: [
