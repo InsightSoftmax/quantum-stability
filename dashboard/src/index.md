@@ -140,9 +140,9 @@ html`<div>${Plot.plot({
 })}<div style="margin-top:6px">${Plot.legend({className: "isc-legend", marginLeft: 55, color: {type: "categorical", domain: colorDomain, range: colorRange}})}</div></div>`
 ```
 
-## Time to results
+## Time to results: wall-clock (includes queue)
 
-Wall-clock duration from first circuit submitted to last result received. Includes queue wait time. Where available, QPU execution time (dashed) shows how long circuits actually ran on the device — the gap between the two lines is infrastructure overhead.
+Wall-clock duration from first circuit submitted to last result received, including any queue wait time on the device. Log scale — each grid line is 10× the previous.
 
 ```js
 // Platforms with reliable timing data (exclude old ionq Aria/Harmony — unreliable queue times)
@@ -164,7 +164,29 @@ const maTimingRuns = Object.values(timingByLabel).flatMap(runs => {
 });
 const timingColorDomain = [...new Set(timingFlat.map(d => d.label))];
 const timingColorRange = timingColorDomain.map(l => colorRange[colorDomain.indexOf(l)]);
+```
 
+```js
+html`<div>${Plot.plot({
+  width: 900, height: 220, marginLeft: 55,
+  y: {label: "Minutes (log scale)", type: "log", tickFormat: d => d >= 1 ? `${d.toFixed(1)}m` : `${(d * 60).toFixed(0)}s`},
+  x: {type: "utc", label: null, domain: [CHART_START, new Date()]},
+  color: {domain: timingColorDomain, range: timingColorRange},
+  marks: [
+    Plot.line(timingFlat, {x: "date", y: "duration_min", stroke: "label", strokeWidth: 1, strokeOpacity: 0.3, curve: "monotone-x"}),
+    Plot.dot(timingFlat, {x: "date", y: "duration_min", fill: "label", r: 2, fillOpacity: 0.3}),
+    Plot.line(maTimingRuns, {x: "date", y: "maDuration", stroke: "label", strokeWidth: 2.5, curve: "monotone-x"}),
+    Plot.dot(maTimingRuns, {x: "date", y: "maDuration", fill: "label", r: 3.5, tip: true,
+      title: d => `${d.label}\n${d.date.toLocaleDateString()}\nWall-clock: ${d.duration_min >= 1 ? d.duration_min.toFixed(1) + " min" : (d.duration_min * 60).toFixed(0) + " sec"}`}),
+  ],
+})}<div style="margin-top:6px">${Plot.legend({className: "isc-legend", marginLeft: 55, color: {type: "categorical", domain: timingColorDomain, range: timingColorRange}})}</div></div>`
+```
+
+## Time to results: QPU execution only
+
+Time circuits actually spent running on the QPU, excluding queue wait and infrastructure overhead. Log scale. Currently available for Rigetti only — extracted from the compiled Quil program duration returned in each task result.
+
+```js
 // QPU execution time — Rigetti only for now (programDuration from Braket result metadata)
 const qpuFlat = summary
   .filter(p => p.qpu_sparkline && p.qpu_sparkline.length >= 2)
@@ -181,26 +203,26 @@ const maQpuRuns = Object.values(qpuByLabel).flatMap(runs => {
   const maDuration = rollingMean(sorted.map(d => d.duration_min), 4);
   return sorted.map((d, i) => ({...d, maDuration: maDuration[i]}));
 });
+const qpuColorDomain = [...new Set(qpuFlat.map(d => d.label))];
+const qpuColorRange = qpuColorDomain.map(l => colorRange[colorDomain.indexOf(l)]);
 ```
 
 ```js
-html`<div>${Plot.plot({
-  width: 900, height: 220, marginLeft: 55,
-  y: {label: "Minutes", type: "log", tickFormat: d => d >= 1 ? `${d.toFixed(1)}m` : `${(d * 60).toFixed(0)}s`},
-  x: {type: "utc", label: null, domain: [CHART_START, new Date()]},
-  color: {domain: timingColorDomain, range: timingColorRange},
-  marks: [
-    Plot.line(timingFlat, {x: "date", y: "duration_min", stroke: "label", strokeWidth: 1, strokeOpacity: 0.3, curve: "monotone-x"}),
-    Plot.dot(timingFlat, {x: "date", y: "duration_min", fill: "label", r: 2, fillOpacity: 0.3}),
-    Plot.line(maTimingRuns, {x: "date", y: "maDuration", stroke: "label", strokeWidth: 2.5, curve: "monotone-x"}),
-    Plot.dot(maTimingRuns, {x: "date", y: "maDuration", fill: "label", r: 3.5, tip: true,
-      title: d => `${d.label}\n${d.date.toLocaleDateString()}\nWall-clock: ${d.duration_min >= 1 ? d.duration_min.toFixed(1) + " min" : (d.duration_min * 60).toFixed(0) + " sec"}`}),
-    Plot.line(qpuFlat, {x: "date", y: "duration_min", stroke: "label", strokeWidth: 1, strokeOpacity: 0.25, strokeDasharray: "4,3", curve: "monotone-x"}),
-    Plot.line(maQpuRuns, {x: "date", y: "maDuration", stroke: "label", strokeWidth: 2, strokeDasharray: "4,3", curve: "monotone-x"}),
-    Plot.dot(maQpuRuns, {x: "date", y: "maDuration", fill: "label", r: 3, symbol: "diamond", tip: true,
-      title: d => `${d.label}\n${d.date.toLocaleDateString()}\nQPU execution: ${(d.duration_min * 60).toFixed(3)} sec`}),
-  ],
-})}<div style="margin-top:6px">${Plot.legend({className: "isc-legend", marginLeft: 55, color: {type: "categorical", domain: timingColorDomain, range: timingColorRange}})}</div></div>`
+qpuFlat.length > 0
+  ? html`<div>${Plot.plot({
+      width: 900, height: 220, marginLeft: 55,
+      y: {label: "Minutes (log scale)", type: "log", tickFormat: d => d >= 1 ? `${d.toFixed(1)}m` : d >= 1/60 ? `${(d * 60).toFixed(0)}s` : `${(d * 60000).toFixed(0)}ms`},
+      x: {type: "utc", label: null, domain: [CHART_START, new Date()]},
+      color: {domain: qpuColorDomain, range: qpuColorRange},
+      marks: [
+        Plot.line(qpuFlat, {x: "date", y: "duration_min", stroke: "label", strokeWidth: 1, strokeOpacity: 0.3, curve: "monotone-x"}),
+        Plot.dot(qpuFlat, {x: "date", y: "duration_min", fill: "label", r: 2, fillOpacity: 0.3}),
+        Plot.line(maQpuRuns, {x: "date", y: "maDuration", stroke: "label", strokeWidth: 2.5, curve: "monotone-x"}),
+        Plot.dot(maQpuRuns, {x: "date", y: "maDuration", fill: "label", r: 3.5, tip: true,
+          title: d => `${d.label}\n${d.date.toLocaleDateString()}\nQPU execution: ${(d.duration_min * 60000).toFixed(1)} ms`}),
+      ],
+    })}<div style="margin-top:6px">${Plot.legend({className: "isc-legend", marginLeft: 55, color: {type: "categorical", domain: qpuColorDomain, range: qpuColorRange}})}</div></div>`
+  : html`<p style="color:var(--isc-muted);font-size:0.9rem">QPU execution data not yet available — run the backfill script to populate historical Rigetti data.</p>`
 ```
 
 ## Platform summary
