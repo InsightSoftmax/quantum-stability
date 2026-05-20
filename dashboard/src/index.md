@@ -137,6 +137,47 @@ html`<div>${Plot.plot({
 })}<div style="margin-top:6px">${Plot.legend({className: "isc-legend", marginLeft: 55, color: {type: "categorical", domain: colorDomain, range: colorRange}})}</div></div>`
 ```
 
+## Time to results
+
+Wall-clock duration from first circuit submitted to last result received, in minutes. Includes any queue wait time on the device. Faded line and dots are individual runs; bold line is the 4-run rolling average.
+
+```js
+// Platforms with reliable timing data (exclude old ionq Aria/Harmony — unreliable queue times)
+const timingPlatforms = new Set(["aqt_braket", "iqm_braket", "rigetti_ankaa", "rigetti_cepheus", "ionq_forte_direct"]);
+const timingFlat = summary
+  .filter(p => timingPlatforms.has(p.platform) && p.timing_sparkline && p.timing_sparkline.length >= 2)
+  .flatMap(p => p.timing_sparkline.map(d => ({
+    date: new Date(d.date),
+    duration_min: d.duration_min,
+    label: PLATFORM_LABEL[p.platform] ?? p.platform,
+  })));
+const timingByLabel = {};
+timingFlat.forEach(d => (timingByLabel[d.label] = timingByLabel[d.label] || []).push(d));
+const maTimingRuns = Object.values(timingByLabel).flatMap(runs => {
+  const sorted = runs.slice().sort((a, b) => a.date - b.date);
+  const maDuration = rollingMean(sorted.map(d => d.duration_min), 4);
+  return sorted.map((d, i) => ({...d, maDuration: maDuration[i]}));
+});
+const timingColorDomain = [...new Set(timingFlat.map(d => d.label))];
+const timingColorRange = timingColorDomain.map(l => colorRange[colorDomain.indexOf(l)]);
+```
+
+```js
+html`<div>${Plot.plot({
+  width: 900, height: 220, marginLeft: 55,
+  y: {label: "Minutes", type: "log", tickFormat: d => d >= 1 ? `${d}m` : `${(d * 60).toFixed(0)}s`},
+  x: {type: "utc", label: null},
+  color: {domain: timingColorDomain, range: timingColorRange},
+  marks: [
+    Plot.line(timingFlat, {x: "date", y: "duration_min", stroke: "label", strokeWidth: 1, strokeOpacity: 0.3, curve: "monotone-x"}),
+    Plot.dot(timingFlat, {x: "date", y: "duration_min", fill: "label", r: 2, fillOpacity: 0.3}),
+    Plot.line(maTimingRuns, {x: "date", y: "maDuration", stroke: "label", strokeWidth: 2.5, curve: "monotone-x"}),
+    Plot.dot(maTimingRuns, {x: "date", y: "maDuration", fill: "label", r: 3.5, tip: true,
+      title: d => `${d.label}\n${d.date.toLocaleDateString()}\n${d.duration_min >= 1 ? d.duration_min.toFixed(1) + " min" : (d.duration_min * 60).toFixed(0) + " sec"}`}),
+  ],
+})}<div style="margin-top:6px">${Plot.legend({className: "isc-legend", marginLeft: 55, color: {type: "categorical", domain: timingColorDomain, range: timingColorRange}})}</div></div>`
+```
+
 ## Platform summary
 
 ```js
@@ -167,6 +208,7 @@ const summaryRows = sortedSummary.map(p => {
     latest_success: latest,
     mean_success: allMean,
     n_runs: p.n_runs,
+    median_duration_min: p.median_duration_min ?? null,
   };
 }).sort((a, b) => {
   const statusOrder = s => s === "active" ? 0 : 1;
@@ -179,15 +221,16 @@ const summaryHref = new Map(summaryRows.map(r => [r.name, r.href]));
 ```js
 Inputs.table(summaryRows, {
   select: false,
-  columns: ["name", "status", "consistency", "latest_success", "mean_success", "n_runs"],
-  header: {name: "Platform", status: "Status", consistency: "Consistency (4-run avg)", latest_success: "Latest success", mean_success: "All-time mean", n_runs: "Runs"},
-  width: {name: 210, status: 80, consistency: 160, latest_success: 120, mean_success: 120, n_runs: 60},
+  columns: ["name", "status", "consistency", "latest_success", "mean_success", "n_runs", "median_duration_min"],
+  header: {name: "Platform", status: "Status", consistency: "Consistency (4-run avg)", latest_success: "Latest success", mean_success: "All-time mean", n_runs: "Runs", median_duration_min: "Median time to results"},
+  width: {name: 210, status: 80, consistency: 160, latest_success: 120, mean_success: 120, n_runs: 60, median_duration_min: 150},
   format: {
     name: d => { const href = summaryHref.get(d); return href ? html`<a href="${href}">${d}</a>` : d; },
     status: d => html`<span class="badge ${d === "active" ? "badge-active" : "badge-historical"}">${d === "active" ? "Active" : "Paused"}</span>`,
     consistency: d => d != null ? `${(d * 100).toFixed(1)}%` : "—",
     latest_success: d => d != null ? `${(d * 100).toFixed(1)}%` : "—",
     mean_success: d => d != null ? `${(d * 100).toFixed(1)}%` : "—",
+    median_duration_min: d => d == null ? "—" : d >= 1 ? `${d.toFixed(1)} min` : `${(d * 60).toFixed(0)} sec`,
   },
 })
 ```
@@ -261,7 +304,7 @@ Inputs.table(sortedCostRows, {
 })
 ```
 
-*AQT pricing converted at EUR/USD ≈ 1.09. IonQ Aria-1 figure is historical ($0.03/shot via Braket). Forte-1 (direct) cost based on observed billing; Forte-1 (Braket) at published Braket rates.*
+*AQT pricing converted at EUR/USD ≈ 1.09. IonQ Aria-1 figure is historical ($0.03/shot via Braket). Forte-1 (direct) cost based on observed billing; Forte-1 (Braket) at published Braket rates. IBM Pittsburgh and Marrakesh costs are averages based on observed QPU-second billing at $1.60/QPU-second.*
 
 ---
 
