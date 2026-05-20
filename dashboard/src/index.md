@@ -77,9 +77,12 @@ const PLATFORM_COLOR = {
   iqm_braket: "#2E8B74",
   rigetti_ankaa: "#A07800", rigetti_cepheus: "#CC8A00",
 };
+// Clip all charts to the era of automated, longitudinal monitoring
+const CHART_START = new Date("2025-10-23");
+
 const allRuns = summary.flatMap(p =>
   p.sparkline.map(d => ({...d, label: PLATFORM_LABEL[p.platform] ?? p.platform, date: new Date(d.date)}))
-);
+).filter(d => d.date >= CHART_START);
 const colorDomain = Object.values(PLATFORM_LABEL);
 const colorRange  = Object.values(PLATFORM_COLOR);
 
@@ -104,7 +107,7 @@ const maRuns = Object.values(byLabel).flatMap(runs => {
 html`<div>${Plot.plot({
   width: 900, height: 220, marginLeft: 55,
   y: {label: "Consistency score", tickFormat: d => `${(d * 100).toFixed(0)}%`},
-  x: {type: "utc", label: null},
+  x: {type: "utc", label: null, domain: [CHART_START, new Date()]},
   color: {domain: colorDomain, range: colorRange},
   marks: [
     Plot.line(allRuns, {x: "date", y: d => 1 - d.std, stroke: "label", strokeWidth: 1, strokeOpacity: 0.3, curve: "monotone-x"}),
@@ -124,7 +127,7 @@ Faded line and dots are individual runs; bold line and larger dots are the 4-run
 html`<div>${Plot.plot({
   width: 900, height: 280, marginLeft: 55,
   y: {domain: [Math.floor(Math.min(...allRuns.map(d => d.value)) * 20) / 20, 1.02], label: "Mean success probability", tickFormat: d => `${(d*100).toFixed(0)}%`},
-  x: {type: "utc", label: null},
+  x: {type: "utc", label: null, domain: [CHART_START, new Date()]},
   color: {domain: colorDomain, range: colorRange},
   marks: [
     Plot.ruleY([1], {stroke: "#e2e8f0"}),
@@ -150,7 +153,8 @@ const timingFlat = summary
     date: new Date(d.date),
     duration_min: d.duration_min,
     label: PLATFORM_LABEL[p.platform] ?? p.platform,
-  })));
+  })))
+  .filter(d => d.date >= CHART_START);
 const timingByLabel = {};
 timingFlat.forEach(d => (timingByLabel[d.label] = timingByLabel[d.label] || []).push(d));
 const maTimingRuns = Object.values(timingByLabel).flatMap(runs => {
@@ -166,7 +170,7 @@ const timingColorRange = timingColorDomain.map(l => colorRange[colorDomain.index
 html`<div>${Plot.plot({
   width: 900, height: 220, marginLeft: 55,
   y: {label: "Minutes", type: "log", tickFormat: d => d >= 1 ? `${d}m` : `${(d * 60).toFixed(0)}s`},
-  x: {type: "utc", label: null},
+  x: {type: "utc", label: null, domain: [CHART_START, new Date()]},
   color: {domain: timingColorDomain, range: timingColorRange},
   marks: [
     Plot.line(timingFlat, {x: "date", y: "duration_min", stroke: "label", strokeWidth: 1, strokeOpacity: 0.3, curve: "monotone-x"}),
