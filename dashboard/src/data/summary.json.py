@@ -13,9 +13,9 @@ PLATFORMS = {
     "aqt":             {"backend": "IBEX",          "status": "active",     "cost_per_run_usd": 25.07},
     "ibm_brisbane":    {"backend": "Brisbane",      "status": "historical", "cost_per_run_usd": None,
                         "csv_key": "ibm_brisbane"},
-    "ibm_pittsburgh":  {"backend": "Pittsburgh",    "status": "active",     "cost_per_run_usd": None,
+    "ibm_pittsburgh":  {"backend": "Pittsburgh",    "status": "active",     "cost_per_run_usd": 22.00,
                         "csv_key": "ibm_pittsburgh"},
-    "ibm_marrakesh":   {"backend": "Marrakesh",     "status": "active",     "cost_per_run_usd": None,
+    "ibm_marrakesh":   {"backend": "Marrakesh",     "status": "active",     "cost_per_run_usd": 27.00,
                         "csv_key": "ibm_marrakesh"},
     "ionq":       {"backend": "Aria-1",  "status": "historical", "cost_per_run_usd": 33.00,
                    "csv_key": "ionq", "backend_filter": "Aria"},
@@ -44,6 +44,7 @@ for platform, meta in PLATFORMS.items():
             "cost_per_run_usd": meta["cost_per_run_usd"],
             "latest_run": None, "latest_success": None, "overall_mean": None,
             "n_runs": 0, "n_circuits": 0, "sparkline": [],
+            "timing_sparkline": [], "median_duration_min": None,
         })
         continue
 
@@ -66,6 +67,7 @@ for platform, meta in PLATFORMS.items():
             "n_runs": 0,
             "n_circuits": 0,
             "sparkline": [],
+            "timing_sparkline": [], "median_duration_min": None,
         })
         continue
 
@@ -86,6 +88,26 @@ for platform, meta in PLATFORMS.items():
         for _, row in runs.iterrows()
     ]
 
+    # Per-run wall-clock duration: max(job_end_time) − min(job_start_time) per run
+    timing_sparkline = []
+    median_duration_min = None
+    df_t = df[df["job_start_time"].notna() & df["job_end_time"].notna()].copy()
+    if not df_t.empty:
+        df_t["job_start_time"] = pd.to_datetime(df_t["job_start_time"], utc=True)
+        df_t["job_end_time"] = pd.to_datetime(df_t["job_end_time"], utc=True)
+        timing = (
+            df_t.groupby("run_date")
+            .apply(lambda g: (g["job_end_time"].max() - g["job_start_time"].min()).total_seconds() / 60,
+                   include_groups=False)
+            .reset_index()
+        )
+        timing.columns = ["run_date", "duration_min"]
+        timing_sparkline = [
+            {"date": row["run_date"].strftime("%Y-%m-%d"), "duration_min": round(float(row["duration_min"]), 3)}
+            for _, row in timing.iterrows()
+        ]
+        median_duration_min = round(float(timing["duration_min"].median()), 3)
+
     latest_run = runs["run_date"].max()
     latest_success = runs.loc[runs["run_date"] == latest_run, "success_probability"].values[0]
 
@@ -100,6 +122,8 @@ for platform, meta in PLATFORMS.items():
         "n_runs": int(runs.shape[0]),
         "n_circuits": int(df.shape[0]),
         "sparkline": sparkline,
+        "timing_sparkline": timing_sparkline,
+        "median_duration_min": median_duration_min,
     })
 
 json.dump(summary, sys.stdout)

@@ -25,7 +25,7 @@ from scripts.record_incident import classify_error, record_incident
 FIELDNAMES = [
     "run_date", "platform", "backend", "input_bits", "circuit_length",
     "shots", "counts_json", "success_probability", "job_id",
-    "job_start_time", "job_end_time", "sdk_version", "notes",
+    "job_start_time", "job_end_time", "qpu_execution_sec", "sdk_version", "notes",
 ]
 
 # Pending batches older than this are timed out and recorded as queue_timeout incidents.

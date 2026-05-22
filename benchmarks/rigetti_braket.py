@@ -109,6 +109,7 @@ def _collect_tasks(jobs_meta: list, tasks: list, pending: dict) -> list[dict]:
             "job_id": job_meta["job_id"],
             "job_start_time": getattr(metadata, "createdAt", None),
             "job_end_time": getattr(metadata, "endedAt", None),
+
             "sdk_version": pending["sdk_version"],
             "notes": _notes(pending),
         })
@@ -171,6 +172,7 @@ def collect(pending: dict) -> list[dict] | None:
             "job_id": job_meta["job_id"],
             "job_start_time": getattr(metadata, "createdAt", None),
             "job_end_time": getattr(metadata, "endedAt", None),
+
             "sdk_version": pending["sdk_version"],
             "notes": _notes(pending),
         })
