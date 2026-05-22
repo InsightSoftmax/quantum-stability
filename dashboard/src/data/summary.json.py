@@ -44,7 +44,7 @@ for platform, meta in PLATFORMS.items():
             "cost_per_run_usd": meta["cost_per_run_usd"],
             "latest_run": None, "latest_success": None, "overall_mean": None,
             "n_runs": 0, "n_circuits": 0, "sparkline": [],
-            "timing_sparkline": [], "median_duration_min": None, "qpu_sparkline": [],
+            "timing_sparkline": [], "median_duration_min": None,
         })
         continue
 
@@ -67,7 +67,7 @@ for platform, meta in PLATFORMS.items():
             "n_runs": 0,
             "n_circuits": 0,
             "sparkline": [],
-            "timing_sparkline": [], "median_duration_min": None, "qpu_sparkline": [],
+            "timing_sparkline": [], "median_duration_min": None,
         })
         continue
 
@@ -108,19 +108,6 @@ for platform, meta in PLATFORMS.items():
         ]
         median_duration_min = round(float(timing["duration_min"].median()), 3)
 
-    # Per-run QPU execution time: sum(qpu_execution_sec) per run (Rigetti only for now)
-    qpu_sparkline = []
-    df_qpu = df[df["qpu_execution_sec"].notna() & (df["qpu_execution_sec"] != "")].copy() \
-        if "qpu_execution_sec" in df.columns else pd.DataFrame()
-    if not df_qpu.empty:
-        df_qpu["qpu_execution_sec"] = pd.to_numeric(df_qpu["qpu_execution_sec"], errors="coerce")
-        df_qpu = df_qpu[df_qpu["qpu_execution_sec"].notna()]
-        qpu_by_run = df_qpu.groupby("run_date")["qpu_execution_sec"].sum().reset_index()
-        qpu_sparkline = [
-            {"date": row["run_date"].strftime("%Y-%m-%d"), "qpu_sec": round(float(row["qpu_execution_sec"]), 6)}
-            for _, row in qpu_by_run.iterrows()
-        ]
-
     latest_run = runs["run_date"].max()
     latest_success = runs.loc[runs["run_date"] == latest_run, "success_probability"].values[0]
 
@@ -137,7 +124,6 @@ for platform, meta in PLATFORMS.items():
         "sparkline": sparkline,
         "timing_sparkline": timing_sparkline,
         "median_duration_min": median_duration_min,
-        "qpu_sparkline": qpu_sparkline,
     })
 
 json.dump(summary, sys.stdout)

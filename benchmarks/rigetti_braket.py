@@ -88,21 +88,6 @@ def submit(
     return pending
 
 
-def _qpu_execution_sec(result) -> float | None:
-    """Extract QPU program execution time in seconds from a Rigetti task result.
-
-    programDuration in rigettiMetadata is in microseconds and represents the time
-    the compiled Quil program spent executing on the QPU (not including queue wait
-    or infrastructure overhead).
-    """
-    try:
-        am = result.additional_metadata
-        qpu_us = am.rigettiMetadata.nativeQuilMetadata.programDuration
-        return round(float(qpu_us) / 1_000_000, 9) if qpu_us is not None else None
-    except Exception:
-        return None
-
-
 def _collect_tasks(jobs_meta: list, tasks: list, pending: dict) -> list[dict]:
     """Build result dicts from already-completed task objects (used for dry runs)."""
     results = []
@@ -124,7 +109,7 @@ def _collect_tasks(jobs_meta: list, tasks: list, pending: dict) -> list[dict]:
             "job_id": job_meta["job_id"],
             "job_start_time": getattr(metadata, "createdAt", None),
             "job_end_time": getattr(metadata, "endedAt", None),
-            "qpu_execution_sec": _qpu_execution_sec(result),
+
             "sdk_version": pending["sdk_version"],
             "notes": _notes(pending),
         })
@@ -187,7 +172,7 @@ def collect(pending: dict) -> list[dict] | None:
             "job_id": job_meta["job_id"],
             "job_start_time": getattr(metadata, "createdAt", None),
             "job_end_time": getattr(metadata, "endedAt", None),
-            "qpu_execution_sec": _qpu_execution_sec(result),
+
             "sdk_version": pending["sdk_version"],
             "notes": _notes(pending),
         })

@@ -182,48 +182,6 @@ html`<div>${Plot.plot({
 })}<div style="margin-top:6px">${Plot.legend({className: "isc-legend", marginLeft: 55, color: {type: "categorical", domain: timingColorDomain, range: timingColorRange}})}</div></div>`
 ```
 
-## Time to results: QPU execution only
-
-Time circuits actually spent running on the QPU, excluding queue wait and infrastructure overhead. Log scale. Currently available for Rigetti only — extracted from the compiled Quil program duration returned in each task result.
-
-```js
-// QPU execution time — Rigetti only for now (programDuration from Braket result metadata)
-const qpuFlat = summary
-  .filter(p => p.qpu_sparkline && p.qpu_sparkline.length >= 2)
-  .flatMap(p => p.qpu_sparkline.map(d => ({
-    date: new Date(d.date),
-    duration_min: d.qpu_sec / 60,
-    label: PLATFORM_LABEL[p.platform] ?? p.platform,
-  })))
-  .filter(d => d.date >= CHART_START);
-const qpuByLabel = {};
-qpuFlat.forEach(d => (qpuByLabel[d.label] = qpuByLabel[d.label] || []).push(d));
-const maQpuRuns = Object.values(qpuByLabel).flatMap(runs => {
-  const sorted = runs.slice().sort((a, b) => a.date - b.date);
-  const maDuration = rollingMean(sorted.map(d => d.duration_min), 4);
-  return sorted.map((d, i) => ({...d, maDuration: maDuration[i]}));
-});
-const qpuColorDomain = [...new Set(qpuFlat.map(d => d.label))];
-const qpuColorRange = qpuColorDomain.map(l => colorRange[colorDomain.indexOf(l)]);
-```
-
-```js
-qpuFlat.length > 0
-  ? html`<div>${Plot.plot({
-      width: 900, height: 220, marginLeft: 55,
-      y: {label: "Minutes (log scale)", type: "log", tickFormat: d => d >= 1 ? `${d.toFixed(1)}m` : d >= 1/60 ? `${(d * 60).toFixed(0)}s` : `${(d * 60000).toFixed(0)}ms`},
-      x: {type: "utc", label: null, domain: [CHART_START, new Date()]},
-      color: {domain: qpuColorDomain, range: qpuColorRange},
-      marks: [
-        Plot.line(qpuFlat, {x: "date", y: "duration_min", stroke: "label", strokeWidth: 1, strokeOpacity: 0.3, curve: "monotone-x"}),
-        Plot.dot(qpuFlat, {x: "date", y: "duration_min", fill: "label", r: 2, fillOpacity: 0.3}),
-        Plot.line(maQpuRuns, {x: "date", y: "maDuration", stroke: "label", strokeWidth: 2.5, curve: "monotone-x"}),
-        Plot.dot(maQpuRuns, {x: "date", y: "maDuration", fill: "label", r: 3.5, tip: true,
-          title: d => `${d.label}\n${d.date.toLocaleDateString()}\nQPU execution: ${(d.duration_min * 60000).toFixed(1)} ms`}),
-      ],
-    })}<div style="margin-top:6px">${Plot.legend({className: "isc-legend", marginLeft: 55, color: {type: "categorical", domain: qpuColorDomain, range: qpuColorRange}})}</div></div>`
-  : html`<p style="color:var(--isc-muted);font-size:0.9rem">QPU execution data not yet available — run the backfill script to populate historical Rigetti data.</p>`
-```
 
 ## Platform summary
 
