@@ -1,2 +1,3 @@
 incident_date,platform,type,error_message,notes
 2026-05-15,ionq_braket,platform_offline,An error occurred (DeviceOfflineException) when calling the CreateQuantumTask operation: Device is not available. Status = OFFLINE,
+2026-06-15,ionq_braket,platform_offline,An error occurred (DeviceOfflineException) when calling the CreateQuantumTask operation: Device is not available. Status = OFFLINE,
