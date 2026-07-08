@@ -1,0 +1,61 @@
+{
+  "run_date": "2026-07-08",
+  "platform": "iqm_braket",
+  "backend": "Garnet",
+  "sdk_version": "1.114.0",
+  "shots": 100,
+  "submitted_at": "2026-07-08T11:10:57.286544+00:00",
+  "dry_run": false,
+  "jobs": [
+    {
+      "job_id": "arn:aws:braket:eu-north-1:835581428919:quantum-task/049cd97b-8792-491c-8b8b-a0f19df20afc",
+      "input_bits": "10",
+      "circuit_length": 1
+    },
+    {
+      "job_id": "arn:aws:braket:eu-north-1:835581428919:quantum-task/6996b6cc-f432-4fdb-9be8-686552e60822",
+      "input_bits": "01",
+      "circuit_length": 2
+    },
+    {
+      "job_id": "arn:aws:braket:eu-north-1:835581428919:quantum-task/056d7081-0d40-4ea4-b3ed-d771dff6cf64",
+      "input_bits": "01",
+      "circuit_length": 3
+    },
+    {
+      "job_id": "arn:aws:braket:eu-north-1:835581428919:quantum-task/09a7e349-d9d0-4826-b066-a419e78f473a",
+      "input_bits": "10",
+      "circuit_length": 4
+    },
+    {
+      "job_id": "arn:aws:braket:eu-north-1:835581428919:quantum-task/b7a01843-0652-4853-ae39-b4182f3f83b5",
+      "input_bits": "00",
+      "circuit_length": 5
+    },
+    {
+      "job_id": "arn:aws:braket:eu-north-1:835581428919:quantum-task/65349d84-6f9a-45bc-982e-8ef0e6416ebc",
+      "input_bits": "11",
+      "circuit_length": 6
+    },
+    {
+      "job_id": "arn:aws:braket:eu-north-1:835581428919:quantum-task/07bba6fd-9d11-4b90-83d2-54695a7a3ab9",
+      "input_bits": "00",
+      "circuit_length": 1
+    },
+    {
+      "job_id": "arn:aws:braket:eu-north-1:835581428919:quantum-task/edd79086-7799-4c6a-8e99-1ef8ca31ca41",
+      "input_bits": "10",
+      "circuit_length": 2
+    },
+    {
+      "job_id": "arn:aws:braket:eu-north-1:835581428919:quantum-task/ee510a33-caf0-4199-bcad-60c787d40040",
+      "input_bits": "11",
+      "circuit_length": 4
+    },
+    {
+      "job_id": "arn:aws:braket:eu-north-1:835581428919:quantum-task/62b0501e-2f8b-4cb2-8885-e03bd4e9cff3",
+      "input_bits": "11",
+      "circuit_length": 6
+    }
+  ]
+}
