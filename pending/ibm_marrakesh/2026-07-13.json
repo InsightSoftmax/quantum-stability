@@ -1,0 +1,62 @@
+{
+  "run_date": "2026-07-13",
+  "platform": "ibm_marrakesh",
+  "backend": "ibm_marrakesh",
+  "sdk_version": "0.44.1",
+  "shots": 100,
+  "submitted_at": "2026-07-13T13:00:01.629076+00:00",
+  "dry_run": false,
+  "use_simulator": false,
+  "jobs": [
+    {
+      "job_id": "d9ae2iaf47jc73aa4fm0",
+      "input_bits": "00",
+      "circuit_length": 1
+    },
+    {
+      "job_id": "d9ae2iif47jc73aa4fmg",
+      "input_bits": "10",
+      "circuit_length": 2
+    },
+    {
+      "job_id": "d9ae2it2su3c739lgb2g",
+      "input_bits": "10",
+      "circuit_length": 3
+    },
+    {
+      "job_id": "d9ae2j2f47jc73aa4fo0",
+      "input_bits": "00",
+      "circuit_length": 4
+    },
+    {
+      "job_id": "d9ae2jd2su3c739lgb30",
+      "input_bits": "01",
+      "circuit_length": 5
+    },
+    {
+      "job_id": "d9ae2jif47jc73aa4fp0",
+      "input_bits": "00",
+      "circuit_length": 6
+    },
+    {
+      "job_id": "d9ae2jkqp3as739v6570",
+      "input_bits": "01",
+      "circuit_length": 5
+    },
+    {
+      "job_id": "d9ae2jt2su3c739lgb40",
+      "input_bits": "10",
+      "circuit_length": 5
+    },
+    {
+      "job_id": "d9ae2k2f47jc73aa4fpg",
+      "input_bits": "00",
+      "circuit_length": 4
+    },
+    {
+      "job_id": "d9ae2kaf47jc73aa4fqg",
+      "input_bits": "01",
+      "circuit_length": 2
+    }
+  ]
+}
