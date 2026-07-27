@@ -1,0 +1,62 @@
+{
+  "run_date": "2026-07-27",
+  "platform": "rigetti",
+  "backend": "Cepheus-1-108Q",
+  "sdk_version": "1.114.0",
+  "shots": 100,
+  "submitted_at": "2026-07-27T12:36:27.421529+00:00",
+  "dry_run": false,
+  "use_simulator": false,
+  "jobs": [
+    {
+      "job_id": "arn:aws:braket:us-west-1:835581428919:quantum-task/c8b1bd54-2e0f-48f2-a145-e8aed29ec1f6",
+      "input_bits": "01",
+      "circuit_length": 1
+    },
+    {
+      "job_id": "arn:aws:braket:us-west-1:835581428919:quantum-task/50163577-99ed-44cc-bc33-ef7abb42e898",
+      "input_bits": "00",
+      "circuit_length": 2
+    },
+    {
+      "job_id": "arn:aws:braket:us-west-1:835581428919:quantum-task/54e420df-e095-4ac0-843c-2f4dfeb0ad40",
+      "input_bits": "10",
+      "circuit_length": 3
+    },
+    {
+      "job_id": "arn:aws:braket:us-west-1:835581428919:quantum-task/d749fcf9-89da-4340-a14b-82f0fb431451",
+      "input_bits": "10",
+      "circuit_length": 4
+    },
+    {
+      "job_id": "arn:aws:braket:us-west-1:835581428919:quantum-task/9297576c-1feb-48df-8a87-88d2893cf585",
+      "input_bits": "11",
+      "circuit_length": 5
+    },
+    {
+      "job_id": "arn:aws:braket:us-west-1:835581428919:quantum-task/97bda49f-a70f-4ad1-8aac-54856f5af77f",
+      "input_bits": "11",
+      "circuit_length": 6
+    },
+    {
+      "job_id": "arn:aws:braket:us-west-1:835581428919:quantum-task/8428d3b3-c500-4643-aaaa-18c70f567c13",
+      "input_bits": "00",
+      "circuit_length": 3
+    },
+    {
+      "job_id": "arn:aws:braket:us-west-1:835581428919:quantum-task/273a7ceb-112d-40b2-8546-b0dea172b986",
+      "input_bits": "00",
+      "circuit_length": 2
+    },
+    {
+      "job_id": "arn:aws:braket:us-west-1:835581428919:quantum-task/8943d6d6-3d34-48c4-a3fa-b9d672f22a74",
+      "input_bits": "00",
+      "circuit_length": 3
+    },
+    {
+      "job_id": "arn:aws:braket:us-west-1:835581428919:quantum-task/13c168e1-f493-4258-9a13-d4d29defff50",
+      "input_bits": "11",
+      "circuit_length": 5
+    }
+  ]
+}
