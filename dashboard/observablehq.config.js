@@ -1,5 +1,6 @@
 export default {
   root: "src",
+  base: "/quantum-stability/",
   title: "Quantum Stability Monitor",
   pages: [
     {name: "Overview", path: "/"},
@@ -28,6 +29,6 @@ export default {
     {name: "About Insight Softmax", path: "/about-isc"},
     {name: "Contact", path: "/contact"},
   ],
-  head: '<link rel="stylesheet" href="/theme.css"><link rel="icon" href="/favicon.svg" type="image/svg+xml">',
+  head: '<link rel="stylesheet" href="/theme.css"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="canonical" href="https://insightsoftmax.com/quantum-stability">',
   footer: 'Quantum Stability Monitor — longitudinal QPU benchmarking by <a href="https://insightsoftmax.com/" target="_blank" rel="noopener">Insight Softmax</a>',
 };
