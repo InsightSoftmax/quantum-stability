@@ -1,0 +1,84 @@
+name: Deploy dashboard to ISC website
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'dashboard/**'
+      - 'data/**'
+      - '.github/workflows/deploy-to-isc.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-isc
+  cancel-in-progress: true
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  build-and-pr:
+    name: Build and open PR
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout quantum-stability
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - name: Install Python dependencies
+        run: uv sync
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: dashboard/package-lock.json
+
+      - name: Install Node dependencies
+        working-directory: dashboard
+        run: npm ci
+
+      - name: Build dashboard
+        working-directory: dashboard
+        run: |
+          source ../.venv/bin/activate
+          npm run build
+
+      - name: Checkout 2024-website
+        uses: actions/checkout@v4
+        with:
+          repository: InsightSoftmax/2024-website
+          token: ${{ secrets.WEBSITE_REPO_PAT }}
+          path: 2024-website
+
+      - name: Sync dist to public/quantum-stability
+        run: |
+          rm -rf 2024-website/public/quantum-stability
+          mkdir -p 2024-website/public/quantum-stability
+          cp -r dashboard/dist/. 2024-website/public/quantum-stability/
+
+      - name: Open PR into 2024-website
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.WEBSITE_REPO_PAT }}
+          path: 2024-website
+          branch: automated/quantum-stability-update
+          base: dev
+          commit-message: 'chore(quantum-stability): update dashboard build'
+          title: 'chore(quantum-stability): update dashboard build'
+          body: |
+            Automated dashboard update.
+
+            Source commit: InsightSoftmax/quantum-stability@${{ github.sha }}
+
+            Review and merge to deploy to dev. Prod ships on the next release cut.
+          delete-branch: false
